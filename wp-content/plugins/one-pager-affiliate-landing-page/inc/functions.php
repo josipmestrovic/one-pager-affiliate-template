@@ -89,29 +89,18 @@ add_action('wp_head', 'opalp_add_secondary_dynamic_styles');
 
 // Add dynamic styles for font family
 function opalp_add_font_family_styles() {
-    $font_family = get_option('opalp_font_family', 'Arial, sans-serif');
+    $header_font_family = get_option('opalp_header_font_family', 'Arial, sans-serif');
+    $paragraph_font_family = get_option('opalp_paragraph_font_family', 'Arial, sans-serif');
     echo '<style>
-        body {
-            font-family: ' . esc_attr($font_family) . ' !important;
+        h1, h2, h3, h4, h5, h6 {
+            font-family: ' . esc_attr($header_font_family) . ' !important;
+        }
+        p {
+            font-family: ' . esc_attr($paragraph_font_family) . ' !important;
         }
     </style>';
 }
 add_action('wp_head', 'opalp_add_font_family_styles');
-
-// Add dynamic styles for button and video border radius
-function opalp_add_border_radius_styles() {
-    $button_radius = get_option('opalp_button_border_radius', '5px');
-    $video_radius = get_option('opalp_video_border_radius', '5px');
-    echo '<style>
-        .btn {
-            border-radius: ' . esc_attr($button_radius) . ' !important;
-        }
-        .hero-section iframe {
-            border-radius: ' . esc_attr($video_radius) . ' !important;
-        }
-    </style>';
-}
-add_action('wp_head', 'opalp_add_border_radius_styles');
 
 // Add settings page for the plugin
 function opalp_add_settings_page() {
@@ -147,10 +136,9 @@ function opalp_render_settings_page() {
 function opalp_register_settings() {
     register_setting('opalp_settings_group', 'opalp_primary_color');
     register_setting('opalp_settings_group', 'opalp_font_family');
-    register_setting('opalp_settings_group', 'opalp_border_radius');
     register_setting('opalp_settings_group', 'opalp_secondary_color');
-    register_setting('opalp_settings_group', 'opalp_button_border_radius');
-    register_setting('opalp_settings_group', 'opalp_video_border_radius');
+    register_setting('opalp_settings_group', 'opalp_header_font_family');
+    register_setting('opalp_settings_group', 'opalp_paragraph_font_family');
 
     add_settings_section(
         'opalp_styles_section',
@@ -176,14 +164,6 @@ function opalp_register_settings() {
     );
 
     add_settings_field(
-        'opalp_border_radius',
-        'Border Radius',
-        'opalp_border_radius_callback',
-        'opalp-settings',
-        'opalp_styles_section'
-    );
-
-    add_settings_field(
         'opalp_secondary_color',
         'Secondary Color',
         function() {
@@ -195,23 +175,17 @@ function opalp_register_settings() {
     );
 
     add_settings_field(
-        'opalp_button_border_radius',
-        'Button Border Radius',
-        function() {
-            $value = get_option('opalp_button_border_radius', '5px');
-            echo '<input type="text" name="opalp_button_border_radius" value="' . esc_attr($value) . '" placeholder="5px" title="Enter a valid CSS border-radius value (e.g., 5px, 50%)">';
-        },
+        'opalp_header_font_family',
+        'Header Font Family',
+        'opalp_header_font_callback',
         'opalp-settings',
         'opalp_styles_section'
     );
 
     add_settings_field(
-        'opalp_video_border_radius',
-        'YouTube Video Border Radius',
-        function() {
-            $value = get_option('opalp_video_border_radius', '5px');
-            echo '<input type="text" name="opalp_video_border_radius" value="' . esc_attr($value) . '" placeholder="5px" title="Enter a valid CSS border-radius value (e.g., 5px, 50%)">';
-        },
+        'opalp_paragraph_font_family',
+        'Paragraph Font Family',
+        'opalp_paragraph_font_callback',
         'opalp-settings',
         'opalp_styles_section'
     );
@@ -252,8 +226,65 @@ function opalp_font_family_callback() {
     echo '<input type="text" name="opalp_font_family" value="' . esc_attr($value) . '">';
 }
 
-function opalp_border_radius_callback() {
-    $value = get_option('opalp_border_radius', '5px');
-    echo '<input type="text" name="opalp_border_radius" value="' . esc_attr($value) . '">';
+function opalp_header_font_callback() {
+    $fonts = [
+        'Arial, sans-serif' => 'Arial',
+        'Roboto, sans-serif' => 'Roboto',
+        'Open Sans, sans-serif' => 'Open Sans',
+        'Lato, sans-serif' => 'Lato',
+        'Montserrat, sans-serif' => 'Montserrat',
+        'Oswald, sans-serif' => 'Oswald',
+        'Raleway, sans-serif' => 'Raleway',
+        'Poppins, sans-serif' => 'Poppins',
+        'Merriweather, serif' => 'Merriweather',
+        'Playfair Display, serif' => 'Playfair Display'
+    ];
+
+    $selected_font = get_option('opalp_header_font_family', 'Arial, sans-serif');
+    echo '<select name="opalp_header_font_family">';
+    foreach ($fonts as $font_value => $font_name) {
+        $selected = $selected_font === $font_value ? 'selected' : '';
+        echo '<option value="' . esc_attr($font_value) . '" ' . $selected . '>' . esc_html($font_name) . '</option>';
+    }
+    echo '</select>';
 }
-?>
+
+function opalp_paragraph_font_callback() {
+    $fonts = [
+        'Arial, sans-serif' => 'Arial',
+        'Roboto, sans-serif' => 'Roboto',
+        'Open Sans, sans-serif' => 'Open Sans',
+        'Lato, sans-serif' => 'Lato',
+        'Montserrat, sans-serif' => 'Montserrat',
+        'Oswald, sans-serif' => 'Oswald',
+        'Raleway, sans-serif' => 'Raleway',
+        'Poppins, sans-serif' => 'Poppins',
+        'Merriweather, serif' => 'Merriweather',
+        'Playfair Display, serif' => 'Playfair Display'
+    ];
+
+    $selected_font = get_option('opalp_paragraph_font_family', 'Arial, sans-serif');
+    echo '<select name="opalp_paragraph_font_family">';
+    foreach ($fonts as $font_value => $font_name) {
+        $selected = $selected_font === $font_value ? 'selected' : '';
+        echo '<option value="' . esc_attr($font_value) . '" ' . $selected . '>' . esc_html($font_name) . '</option>';
+    }
+    echo '</select>';
+}
+
+// Enqueue both Google Fonts
+function opalp_enqueue_google_fonts() {
+    $header_font_family = get_option('opalp_header_font_family', 'Arial, sans-serif');
+    $paragraph_font_family = get_option('opalp_paragraph_font_family', 'Arial, sans-serif');
+
+    $header_font_name = explode(',', $header_font_family)[0];
+    $header_font_name = str_replace(' ', '+', $header_font_name);
+
+    $paragraph_font_name = explode(',', $paragraph_font_family)[0];
+    $paragraph_font_name = str_replace(' ', '+', $paragraph_font_name);
+
+    wp_enqueue_style('opalp-google-font-header', 'https://fonts.googleapis.com/css2?family=' . $header_font_name . ':wght@400;700&display=swap', [], null);
+    wp_enqueue_style('opalp-google-font-paragraph', 'https://fonts.googleapis.com/css2?family=' . $paragraph_font_name . ':wght@400;700&display=swap', [], null);
+}
+add_action('wp_enqueue_scripts', 'opalp_enqueue_google_fonts');
+
