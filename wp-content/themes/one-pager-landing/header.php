@@ -7,3 +7,17 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
+
+<?php
+// Include the countdown logic file
+require_once WP_PLUGIN_DIR . '/one-pager-affiliate-landing-page/inc/countdown-logic.php';
+
+// Fetch the countdown date from custom fields
+$countdown_date = get_field('countdown_date');
+?>
+
+<?php if ($countdown_date): ?>
+    <div class="countdown-header" style="background-color: #333; color: #f5f5f5; text-align: center; padding: 10px;">
+        <?php opalp_render_countdown_script($countdown_date); ?>
+    </div>
+<?php endif; ?>

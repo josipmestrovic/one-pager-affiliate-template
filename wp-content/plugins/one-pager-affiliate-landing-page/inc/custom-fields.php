@@ -8,6 +8,14 @@ function opalp_register_custom_fields() {
             'title' => 'One-Pager Fields',
             'fields' => array(
                 array(
+                    'key' => 'field_countdown_date',
+                    'label' => 'Countdown Date',
+                    'name' => 'countdown_date',
+                    'type' => 'date_picker',
+                    'instructions' => 'Select the date for the countdown.',
+                    'return_format' => 'Y-m-d',
+                ),
+                array(
                     'key' => 'field_header_logo',
                     'label' => 'Header Logo',
                     'name' => 'header_logo',
