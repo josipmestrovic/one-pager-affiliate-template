@@ -29,7 +29,7 @@ $button_1_url = get_field('button_1_url');
     <?php if ($hero_video_url): ?>
         <div class="hero-section mb-5" style="margin-top: 100px;">
             <div class="ratio ratio-16x9" style="max-width: 1200px; margin: 0 auto;">
-                <iframe src="<?php echo esc_url($hero_video_url); ?>" frameborder="0" allowfullscreen style="border-radius: <?php echo esc_attr(get_option('opalp_video_border_radius', '5px')); ?>;"></iframe>
+                <iframe src="<?php echo esc_url($hero_video_url); ?>" frameborder="0" allowfullscreen style="border-radius: 5px;"></iframe>
             </div>
         </div>
       
