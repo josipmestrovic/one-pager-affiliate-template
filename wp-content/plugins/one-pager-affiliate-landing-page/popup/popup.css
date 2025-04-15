@@ -1,0 +1,43 @@
+#popup-container {
+    display: none; /* Ensure popup is hidden on page load */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    visibility: hidden; /* Hide the popup initially */
+}
+
+#popup-content {
+    position: relative; /* Ensure the close button is positioned relative to the popup content */
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+#popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.popup-visible {
+    visibility: visible; /* Make the popup visible */
+}

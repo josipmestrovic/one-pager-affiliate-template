@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once plugin_dir_path( __FILE__ ) . 'inc/functions.php';
 // Include custom fields file
 require_once plugin_dir_path(__FILE__) . 'inc/custom-fields.php';
+// Include popup functionality
+require_once plugin_dir_path(__FILE__) . 'popup/popup.php';
 
 // Activation and deactivation hooks
 function opalp_activate() {
