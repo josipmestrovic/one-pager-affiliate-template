@@ -240,6 +240,25 @@ function opalp_register_custom_fields() {
                     'toolbar' => 'full',
                     'media_upload' => true,
                 ),
+                array(
+                    'key' => 'field_product_rating',
+                    'label' => 'Product Rating',
+                    'name' => 'product_rating',
+                    'type' => 'number',
+                    'instructions' => 'Set the product rating (1 to 5, with up to one decimal place).',
+                    'min' => 1,
+                    'max' => 5,
+                    'step' => 0.1,
+                ),
+                array(
+                    'key' => 'field_number_of_reviews',
+                    'label' => 'Number of Reviews',
+                    'name' => 'number_of_reviews',
+                    'type' => 'number',
+                    'instructions' => 'Enter the number of reviews for the product.',
+                    'min' => 0,
+                    'step' => 1,
+                ),
             ),
             'location' => array(
                 array(

@@ -1,0 +1,10 @@
+.stars {
+    display: inline-flex;
+    gap: 5px;
+    font-size: 24px;
+}
+
+.star {
+    cursor: pointer;
+    transition: color 0.3s;
+}

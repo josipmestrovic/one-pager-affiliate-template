@@ -33,6 +33,38 @@ $initial_visitor_count = isset($_SESSION['visitor_count']) ? $_SESSION['visitor_
     </div>
 
     <?php 
+        $product_rating = get_field('product_rating');
+        $number_of_reviews = get_field('number_of_reviews');
+    ?>
+
+    <div class="product-rating text-center my-4">
+        <div class="stars" data-rating="<?php echo esc_attr(number_format((float)$product_rating, 1)); ?>">
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <div class="star" style="position: relative; display: inline-block; width: 15px; height: 15px;">
+                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 1;">
+                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#C4C4C4"/>
+                    </svg>
+                    <?php if ($i <= floor($product_rating)): ?>
+                        <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2;">
+                            <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#FFDA6A"/>
+                        </svg>
+                    <?php elseif ($i - 1 < $product_rating && $i > $product_rating): ?>
+                        <?php $percentage = ($product_rating - floor($product_rating)) * 100; ?>
+                        <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2; clip-path: inset(0 <?php echo 100 - $percentage; ?>% 0 0);">
+                            <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#FFDA6A"/>
+                        </svg>
+                    <?php endif; ?>
+                </div>
+            <?php endfor; ?>
+        </div>
+        <div class="rating-info">
+            <?php echo esc_html(number_format((float)$product_rating, 1)); ?> | <?php echo esc_html($number_of_reviews); ?> Reviews
+        </div>
+    </div>
+
+
+
+    <?php 
         $hero_video_file = get_field('hero_video_file');
     ?>
 
@@ -55,7 +87,7 @@ $initial_visitor_count = isset($_SESSION['visitor_count']) ? $_SESSION['visitor_
         </div>
     <?php endif; ?>
 
-   
+    
 
     <div class="text-center mb-5" style="margin-top:-250px;" >
             <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary btn-lg" style="margin-bottom: 50px;">
