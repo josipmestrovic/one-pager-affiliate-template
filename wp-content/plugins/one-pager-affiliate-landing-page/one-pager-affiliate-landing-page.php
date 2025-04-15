@@ -18,6 +18,8 @@ require_once plugin_dir_path( __FILE__ ) . 'inc/functions.php';
 require_once plugin_dir_path(__FILE__) . 'inc/custom-fields.php';
 // Include popup functionality
 require_once plugin_dir_path(__FILE__) . 'popup/popup.php';
+// Include visitors logic
+require_once plugin_dir_path(__FILE__) . 'inc/visitors-logic.php';
 
 // Activation and deactivation hooks
 function opalp_activate() {

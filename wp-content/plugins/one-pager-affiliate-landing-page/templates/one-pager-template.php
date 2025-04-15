@@ -15,6 +15,9 @@ $hero_video_url = get_field('hero_video_url');
 $button_1_text = get_field('button_1_text');
 $button_1_url = get_field('button_1_url');
 
+// Add a PHP block to fetch the initial visitor count
+$initial_visitor_count = isset($_SESSION['visitor_count']) ? $_SESSION['visitor_count'] : rand(60, 200);
+
 ?>
 
 
@@ -25,6 +28,9 @@ $button_1_url = get_field('button_1_url');
         </div>
     <?php endif; ?>
     <h1 class="text-center my-4" style="margin-top:120px;">Prostate Support by Double Wood</h1>
+    <div class="visitor-count text-center my-4">
+        <span id="visitor-count"> <?php echo $initial_visitor_count; ?> People Are Checking Out This Product Right Now</span>
+    </div>
 
     <?php 
         $hero_video_file = get_field('hero_video_file');
@@ -48,6 +54,8 @@ $button_1_url = get_field('button_1_url');
             </div>
         </div>
     <?php endif; ?>
+
+   
 
     <div class="text-center mb-5" style="margin-top:-250px;" >
             <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary btn-lg" style="margin-bottom: 50px;">
