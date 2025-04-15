@@ -62,7 +62,31 @@ $initial_visitor_count = isset($_SESSION['visitor_count']) ? $_SESSION['visitor_
         </div>
     </div>
 
+    <?php 
+        $price = get_field('price');
+        $discount_price = get_field('discount_price');
+        $discount_percentage = $discount_price ? round((($price - $discount_price) / $price) * 100) : null;
+    ?>
 
+    <?php if ($price): ?>
+        <div class="product-pricing text-center my-4">
+            <?php if ($discount_price): ?>
+                <div class="discount-percentage" style="color: var(--accent-color); font-weight: bold;">
+                    -<?php echo esc_html($discount_percentage); ?>%
+                </div>
+                <div class="old-price" style="text-decoration: line-through;">
+                    $<?php echo esc_html(number_format($price, 2)); ?>
+                </div>
+                <div class="new-price" style="color: var(--accent-color); font-size: 1.5em; font-weight: bold;">
+                    $<?php echo esc_html(number_format($discount_price, 2)); ?>
+                </div>
+            <?php else: ?>
+                <div class="price" style="font-size: 1.5em; font-weight: bold;">
+                    $<?php echo esc_html(number_format($price, 2)); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
     <?php 
         $hero_video_file = get_field('hero_video_file');

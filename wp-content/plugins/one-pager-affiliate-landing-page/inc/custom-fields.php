@@ -259,6 +259,24 @@ function opalp_register_custom_fields() {
                     'min' => 0,
                     'step' => 1,
                 ),
+                array(
+                    'key' => 'field_price',
+                    'label' => 'Price',
+                    'name' => 'price',
+                    'type' => 'number',
+                    'instructions' => 'Enter the product price.',
+                    'min' => 0,
+                    'step' => 0.01,
+                ),
+                array(
+                    'key' => 'field_discount_price',
+                    'label' => 'Discount Price',
+                    'name' => 'discount_price',
+                    'type' => 'number',
+                    'instructions' => 'Enter the discount price (if applicable).',
+                    'min' => 0,
+                    'step' => 0.01,
+                ),
             ),
             'location' => array(
                 array(
