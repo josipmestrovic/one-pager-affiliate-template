@@ -31,6 +31,15 @@ function opalp_register_custom_fields() {
                     'instructions' => 'Enter the YouTube URL for the hero video.',
                 ),
                 array(
+                    'key' => 'field_hero_video_file',
+                    'label' => 'Hero Video File',
+                    'name' => 'hero_video_file',
+                    'type' => 'file',
+                    'instructions' => 'Upload the MP4 file for the hero video.',
+                    'return_format' => 'url',
+                    'mime_types' => 'mp4',
+                ),
+                array(
                     'key' => 'field_blurb_1_icon_class',
                     'label' => 'Blurb 1 Icon Class',
                     'name' => 'blurb_1_icon_class',

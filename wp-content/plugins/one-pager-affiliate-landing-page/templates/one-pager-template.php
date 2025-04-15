@@ -26,13 +26,27 @@ $button_1_url = get_field('button_1_url');
     <?php endif; ?>
     <h1 class="text-center my-4" style="margin-top:120px;">Prostate Support by Double Wood</h1>
 
-    <?php if ($hero_video_url): ?>
+    <?php 
+        $hero_video_file = get_field('hero_video_file');
+    ?>
+
+    <?php if ($hero_video_file): ?>
+        <div class="hero-section mb-5" style="margin-top: 100px;">
+            <div class="video-wrapper" style="max-width: 1200px; margin: 0 auto;">
+                <video controls style="width: 100%; border-radius: 5px;">
+                    <source src="<?php echo esc_url($hero_video_file); ?>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$hero_video_file && $hero_video_url): ?>
         <div class="hero-section mb-5" style="margin-top: 100px;">
             <div class="ratio ratio-16x9" style="max-width: 1200px; margin: 0 auto;">
                 <iframe src="<?php echo esc_url($hero_video_url); ?>" frameborder="0" allowfullscreen style="border-radius: 5px;"></iframe>
             </div>
         </div>
-      
     <?php endif; ?>
 
     <div class="text-center mb-5" style="margin-top:-250px;" >
