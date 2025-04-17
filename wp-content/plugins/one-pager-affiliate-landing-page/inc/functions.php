@@ -95,7 +95,7 @@ function opalp_add_font_family_styles() {
         h1, h2, h3, h4, h5, h6 {
             font-family: ' . esc_attr($header_font_family) . ' !important;
         }
-        p {
+        p, span, li, .btn {
             font-family: ' . esc_attr($paragraph_font_family) . ' !important;
         }
     </style>';

@@ -1,0 +1,7 @@
+Logo snippet:
+
+<?php if ($header_logo): ?>
+        <div class="header-logo text-center my-4">
+            <img src="<?php echo esc_url($header_logo); ?>" alt="Logo" class="img-fluid">
+        </div>
+    <?php endif; ?>

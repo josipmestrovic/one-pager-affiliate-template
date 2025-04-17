@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             popup.classList.add('popup-visible'); // Add class to make popup visible
             popup.style.visibility = 'visible'; // Fallback to ensure visibility
         }
-    }, 5000); // Delay of 5 seconds
+    }, 115000); // Delay of 5 seconds
 
     const closeButton = document.getElementById('popup-close');
     if (closeButton) {

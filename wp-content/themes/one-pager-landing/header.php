@@ -17,7 +17,10 @@ $countdown_date = get_field('countdown_date');
 ?>
 
 <?php if ($countdown_date): ?>
-    <div class="countdown-header" style="background-color: #333; color: #f5f5f5; text-align: center; padding: 10px;">
-        <?php opalp_render_countdown_script($countdown_date); ?>
+    <div class="countdown-header" style="background-color: #292929; color: #f5f5f5; height:50px; text-align: center; padding: 10px; display: flex; align-items: center; justify-content: center;">
+      <span style="margin-right: 5px;">Offer ending in</span>
+      <span><?php opalp_render_countdown_script($countdown_date); ?></span>
     </div>
 <?php endif; ?>
+</body>
+</html>

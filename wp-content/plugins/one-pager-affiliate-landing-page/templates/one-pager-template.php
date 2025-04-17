@@ -18,18 +18,60 @@ $button_1_url = get_field('button_1_url');
 // Add a PHP block to fetch the initial visitor count
 $initial_visitor_count = isset($_SESSION['visitor_count']) ? $_SESSION['visitor_count'] : rand(60, 200);
 
+// Fetch new custom fields
+$product_name = get_field('product_name');
+$headline = get_field('headline');
+$subheadline = get_field('subheadline');
+$payment_images = get_field('payment_images');
+$money_back_days = get_field('money_back_days');
+
+// Fetch the payment logo fields
+$payment_logo_1 = get_field('payment_logo_1');
+$payment_logo_2 = get_field('payment_logo_2');
+$payment_logo_3 = get_field('payment_logo_3');
+
 ?>
 
 
+
+
 <div class="affiliate-landing-page container">
-    <?php if ($header_logo): ?>
-        <div class="header-logo text-center my-4">
-            <img src="<?php echo esc_url($header_logo); ?>" alt="Logo" class="img-fluid">
-        </div>
-    <?php endif; ?>
+   
     <h1 class="text-center my-4" style="margin-top:120px;">Prostate Support by Double Wood</h1>
     <div class="visitor-count text-center my-4">
         <span id="visitor-count"> <?php echo $initial_visitor_count; ?> People Are Checking Out This Product Right Now</span>
+    </div>
+
+    <div class="product-header text-center my-4">
+        <?php if ($product_name): ?>
+            <h1><?php echo esc_html($product_name); ?></h1>
+        <?php endif; ?>
+        <?php if ($headline): ?>
+            <h2><?php echo esc_html($headline); ?></h2>
+        <?php endif; ?>
+        <?php if ($subheadline): ?>
+            <p><?php echo esc_html($subheadline); ?></p>
+        <?php endif; ?>
+    </div>
+
+    <div class="payment-info d-flex justify-content-between align-items-center my-4">
+        <div class="payment-images d-flex align-items-center">
+            <?php if ($payment_logo_1): ?>
+                <img src="<?php echo esc_url($payment_logo_1); ?>" alt="Payment Logo 1" class="img-fluid" style="width: 50px; height: 15px; margin-right: 10px;">
+            <?php endif; ?>
+            <?php if ($payment_logo_2): ?>
+                <img src="<?php echo esc_url($payment_logo_2); ?>" alt="Payment Logo 2" class="img-fluid" style="width: 50px; height: 15px; margin-right: 10px;">
+            <?php endif; ?>
+            <?php if ($payment_logo_3): ?>
+                <img src="<?php echo esc_url($payment_logo_3); ?>" alt="Payment Logo 3" class="img-fluid" style="width: 50px; height: 15px; margin-right: 10px;">
+            <?php endif; ?>
+            <span>| Securely Process Payments</span>
+        </div>
+        <div class="money-back-guarantee">
+            <?php if ($money_back_days): ?>
+                <span><?php echo esc_html($money_back_days); ?> Days Money Back Guarantee</span>
+            <?php endif; ?>
+        </div>
     </div>
 
     <?php 
@@ -111,7 +153,16 @@ $initial_visitor_count = isset($_SESSION['visitor_count']) ? $_SESSION['visitor_
         </div>
     <?php endif; ?>
 
-    
+    <?php
+    // Fetch the video description field
+    $video_description = get_field('video_description');
+    ?>
+
+    <?php if ($video_description): ?>
+        <div class="video-description text-center my-3">
+            <p><?php echo esc_html($video_description); ?></p>
+        </div>
+    <?php endif; ?>
 
     <div class="text-center mb-5" style="margin-top:-250px;" >
             <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary btn-lg" style="margin-bottom: 50px;">
