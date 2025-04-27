@@ -1,0 +1,312 @@
+:root {
+    /* Dynamic Colors - Default Values */
+    --header-footer-bg: #F2542D; /* Light grey default */
+    --primary-button-bg: #0d6efd; /* Bootstrap primary blue */
+    --secondary-button-bg: #6c757d; /* Bootstrap secondary grey */
+    --featured-bg: #e9ecef; /* Lighter grey */
+    --sticky-footer-bg: #343a40; /* Dark grey */
+    --blurb-icon-color: #0d6efd; /* Default to primary button color */
+    --discount-text-color: #dc3545; /* Bootstrap danger red */
+}
+
+/* Apply default dynamic colors */
+/* Example: Apply to elements that will use these colors */
+
+/* Header/Footer */
+/* Assuming you have classes like .site-header, .site-footer */
+.site-header, 
+.site-footer { 
+    background-color: var(--header-footer-bg);
+}
+
+/* Top Header Bar uses dynamic header-footer-bg */
+.top-header-bar {
+    background-color: var(--header-footer-bg);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-button-bg);
+    border-color: var(--primary-button-bg);
+}
+.btn-secondary {
+    background-color: var(--secondary-button-bg);
+    border-color: var(--secondary-button-bg);
+}
+
+/* Featured Background (e.g., for specific sections) */
+.featured-section {
+    background-color: var(--featured-bg);
+}
+
+/* Sticky Footer */
+/* Assuming a class like .sticky-footer */
+.sticky-footer {
+    background-color: var(--sticky-footer-bg);
+}
+
+/* Blurb Icons */
+.blurb i {
+    color: var(--blurb-icon-color);
+}
+
+/* Discount Text */
+.discount-percentage,
+.new-price {
+    color: var(--discount-text-color);
+}
+
+/* Add other elements that should use dynamic colors */
+
+/* Utility classes for dynamic CSS variables */
+.opalp-bg-header-footer { background-color: var(--header-footer-bg) !important; }
+.opalp-bg-primary-button { background-color: var(--primary-button-bg) !important; }
+.opalp-bg-secondary-button { background-color: var(--secondary-button-bg) !important; }
+.opalp-bg-featured { background-color: var(--featured-bg) !important; }
+.opalp-bg-sticky-footer { background-color: var(--sticky-footer-bg) !important; }
+
+.opalp-text-blurb-icon {
+    color: var(--blurb-icon-color) !important;
+}.opalp-text-discount { color: var(--discount-text-color) !important; }
+
+.opalp-border-primary { border-color: var(--primary-button-bg) !important; }
+.opalp-border-secondary { border-color: var(--secondary-button-bg) !important; }
+
+.btn {
+    border-radius: 40px !important;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+:root {
+    /* Static Colors */
+    --body-text-color: #272929;
+    --title-text-color: #0F1111;
+    --secondary-text-color: #575858;
+}
+
+body {
+    color: var(--body-text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--title-text-color);
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 55px;
+    letter-spacing: 0;
+    color: var(--title-text-color);
+}
+
+h2 {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 55px;
+    letter-spacing: 0;
+    color: var(--title-text-color);
+}
+
+h3 {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 55px;
+    letter-spacing: 0;
+    color: var(--title-text-color);
+}
+
+h4 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 55px;
+    letter-spacing: 0;
+    color: var(--title-text-color);
+}
+
+p, li {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 0;
+    color: var(--body-text-color);
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+/* Example usage for secondary text */
+.blockquote-footer,
+.payment-info span,
+.rating-info {
+    color: var(--secondary-text-color);
+}
+
+/* Add other base styles using static colors here */
+
+/* Style for '+N' payment-more button */
+.payment-more {
+    border: 1px solid #B7B8B8 !important;
+    background-color: #ffffff !important;
+    font-size: 14px !important;
+    color: #575858 !important;
+    border-radius: 5px !important;
+    width: 40px !important;
+    height: 25px !important;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin-right: 12px;
+}
+.payment-more:focus, .payment-more:hover {
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+@media (max-width: 1399px) {
+    h1 { font-size: 30px !important; line-height: 32px !important; }
+    h2 { font-size: 26px !important; }
+    h3 { font-size: 22px !important; }
+    h4 { font-size: 22px !important; }
+    p, span, ul, ol, li, button, .bonus-offer { font-size: 16px !important; }
+    .subheadline-text {
+        font-size: 20px !important;
+    }
+}
+
+
+/* Responsive: stack reviews below product name on screens <1200px */
+@media (max-width: 1199px) {
+    .product-header .d-flex.align-items-top {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    .product-rating {
+        margin: -5px 0 5px !important;
+        width: 100%;
+    }
+ 
+}
+
+/* Responsive: switch to full mobile layout and move image/video below content on screens ≤991px */
+@media (max-width: 991px) {
+    .row.gx-5.align-items-center {
+        flex-direction: column !important;
+    }
+    .row.gx-5.align-items-center .col-md-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    .row.gx-5.align-items-center .col-md-6:first-child {
+        order: 2 !important;
+    }
+    .row.gx-5.align-items-center .col-md-6:nth-child(2) {
+        order: 1 !important;
+    }
+}
+
+@media (min-width: 1399px) {
+        .subheadline-text {
+            font-size: 26px !important;
+        }
+
+        .bonus-offer {
+            font-size: 18px !important;
+            font-weight: 700;
+        }
+        }
+
+.mb-0 .me-3 {
+    font-size:26px !important;
+}
+
+.bonus-offer {
+    font-weight: 600;
+}
+
+
+@media (max-width: 387px) {
+    .secure-payments-text {
+        font-size: 12px !important;
+    }
+}
+
+/* Mobile video block: hidden by default, visible on screens <992px */
+.mobile-video-wrapper { display: none; }
+@media (max-width: 991px) {
+    .mobile-video-wrapper { display: block !important; }
+}
+
+/* Desktop video block: visible on screens ≥992px, hidden on screens <992px */
+.desktop-video-wrapper { display: block; }
+@media (max-width: 991px) {
+    .desktop-video-wrapper { display: none !important; }
+}
+
+/* Fix overlap: add spacing between subheadline and mobile video */
+@media (max-width: 991px) {
+    .subheadline-text { margin-bottom: 1rem !important; }
+    .mobile-video-wrapper { margin-top: 1rem !important; }
+}
+
+
+@media (min-width: 1400px) {
+.video-wrapper {
+    margin-bottom:70px;
+}
+}
+
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .video-wrapper {
+        margin-bottom:40px;
+    }
+    }
+    
+    @media (max-width: 1199px) {
+        .video-wrapper {
+            margin-bottom:110px;
+        }
+        }
+
+
+        @media (max-width: 991px) {
+            .product-header {
+                margin-top: -20px !important;
+
+            }
+        }
+
+
+/* Align top header content width with Bootstrap container */
+.top-header-bar .top-header-content {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Remove extra gutters on hero columns at mobile */
+@media (max-width: 991px) {
+    .row.gx-5.align-items-center {
+        --bs-gutter-x: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    .row.gx-5.align-items-center > [class*="col-"] {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+
+@media (min-width: 1200px) {
+    .facts-image-wrapper {
+        background-color: #FAFAFA;
+        padding: 28px 0 42px;
+    }
+}

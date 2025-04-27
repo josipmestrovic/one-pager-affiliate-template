@@ -1,6 +1,6 @@
-<footer class="site-footer text-center">
+<footer class="site-footer">
     <div class="container">
-        <p>&copy; <?php echo date('Y'); ?> Website made by <a href="https://e-com.hr" target="_blank">E-COM</a>. All rights reserved.</p>
+        <p>&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved.</p>
     </div>
 </footer>
 <?php wp_footer(); ?>

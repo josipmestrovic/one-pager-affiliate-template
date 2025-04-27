@@ -37,18 +37,37 @@ function update_visitor_count() {
 
 // Hook to update the visitor count periodically
 add_action('wp_footer', function () {
-    echo '<script>
-        setInterval(function () {
-            fetch("' . admin_url('admin-ajax.php?action=update_visitor_count') . '")
-                .then(response => response.json())
-                .then(data => {
-                    const visitorElement = document.getElementById("visitor-count");
-                    if (visitorElement) {
-                        visitorElement.textContent = data.count + " People Are Checking Out This Product Right Now";
-                    }
-                });
-        }, 500); // Update every 5 seconds
-    </script>';
+    // Check if the top bar visitor count should be shown
+    global $post;
+    $show_visitor_count_top = false;
+    if (is_page() && get_page_template_slug($post->ID) === 'one-pager-template.php') {
+        // Fetch from the group field
+        $header_bar_content = get_field('header_bar_content', $post->ID);
+        $show_visitor_count_top = isset($header_bar_content['show_visitor_count_in_top_header']) ? $header_bar_content['show_visitor_count_in_top_header'] : false;
+    }
+
+    // Only output the script if needed (either main count or top count is shown)
+    $output_script = $show_visitor_count_top || is_page_template('one-pager-template.php'); // Assume main count always shown on template
+
+    if ($output_script) {
+        echo '<script>
+            setInterval(function () {
+                fetch("' . admin_url('admin-ajax.php?action=update_visitor_count') . '")
+                    .then(response => response.json())
+                    .then(data => {
+                        const visitorElement = document.getElementById("visitor-count");
+                        if (visitorElement) {
+                            visitorElement.textContent = data.count + " People Are Checking Out This Product Right Now";
+                        }
+                        // Also update the top bar visitor count if the element exists
+                        const topVisitorElement = document.getElementById("top-visitor-count");
+                        if (topVisitorElement) { // Check if the element exists
+                            topVisitorElement.textContent = data.count + " People Viewing";
+                        }
+                    });
+            }, 5000); // Update every 5 seconds
+        </script>';
+    }
 });
 
 // AJAX handler to return the updated visitor count

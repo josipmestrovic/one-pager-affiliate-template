@@ -1,7 +1,7 @@
 /* Styles for One-Pager Affiliate Landing Page Plugin */
 
 body {
-    font-family: Arial, sans-serif;
+    /* font-family: Arial, sans-serif; */ /* Removed: Handled by Customizer */
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
@@ -99,3 +99,4 @@ img {
 button, .btn {
     box-shadow: none !important;
 }
+
