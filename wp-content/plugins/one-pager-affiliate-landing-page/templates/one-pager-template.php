@@ -141,6 +141,34 @@ $get_primary_btn_color = get_field('primary_button_color');
     height: auto;
     max-height: 50px;
 }
+/* FAQs Accordion: two-column fixed layout */
+/*
+#faqAccordion {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
+    grid-auto-flow: column;
+    gap: 1rem;
+}
+@media (max-width: 768px) {
+    #faqAccordion {
+        display: block;
+    }
+}
+*/
+/* FAQs accordion equal height columns only on desktop to prevent layout shift */
+@media (min-width: 768px) {
+    #faqAccordion .row {
+        align-items: stretch;
+    }
+    #faqAccordion .col-md-6 {
+        display: flex;
+        flex-direction: column;
+    }
+    #faqAccordion .col-md-6 .accordion {
+        flex: 1;
+    }
+}
 </style>
 <?php
 
@@ -738,7 +766,7 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
             </div>
         </div>
     </div>
-
+   
     <div class="testimonials row justify-content-between text-center mb-5" style="max-width: 1200px; margin: 0 auto;">
         <?php for ($i = 1; $i <= 3; $i++): ?>
             <?php 
@@ -748,6 +776,7 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
             ?>
             <?php if ($text): ?>
                 <div class="col-md-3 col-sm-6 mb-4">
+                    
                     <div class="testimonial">
                         <?php if ($image): ?>
                             <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($author); ?>" class="rounded-circle mb-3" style="width: 80px; height: 80px;">
@@ -771,6 +800,41 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
         <?php endfor; ?>
     </div>
 
+    <div class="text-center mb-4">
+        <h2 class="mb-3">Reviews</h2>
+        <?php
+        $product_rating = get_field('product_rating');
+        $number_of_reviews = get_field('number_of_reviews');
+        ?>
+        <div class="d-flex align-items-top justify-content-center mb-3">
+            <h4 class="mb-0 me-3" style="font-weight:600 !important; "><?php echo esc_html($product_name); ?></h4>
+            <div class="product-rating d-flex align-items-center mb-0">
+                <div class="stars me-2" data-rating="<?php echo esc_attr(number_format((float)$product_rating, 1)); ?>">
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <div class="star" style="position: relative; display: inline-block; width: 15px; height: 15px;">
+                            <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 1;">
+                                <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#C4C4C4"/>
+                            </svg>
+                            <?php if ($i <= floor($product_rating)): ?>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2;">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                            <?php elseif ($i - 1 < $product_rating && $i > $product_rating): ?>
+                                <?php $percentage = ($product_rating - floor($product_rating)) * 100; ?>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2; clip-path: inset(0 <?php echo 100 - $percentage; ?>% 0 0);">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                            <?php endif; ?>
+                        </div>
+                    <?php endfor; ?>
+                </div>
+                <span style="font-weight: 600; color: #575858" class="rating-value me-2"><?php echo esc_html(number_format((float)$product_rating, 1)); ?></span>
+                <span style="font-weight: 600; color: #575858" class="divider me-2">|</span>
+                <span style="font-weight: 600; color: #575858" class="rating-count"><?php echo esc_html($number_of_reviews); ?> Reviews</span>
+            </div>
+        </div>
+    </div>
+
     <div class="text-center mb-5">
         <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary opalp-bg-primary-button btn-lg">
             <?php echo esc_html($button_1_text); ?>
@@ -778,47 +842,88 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
     </div>
 
 
-    <div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Accordion Item #1
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    <!-- Insert dynamic FAQs accordion using ACF fields -->
+<?php
+$faqs = [];
+for ($i = 1; $i <= 6; $i++) {
+    $q = get_field("faq_question_{$i}");
+    $a = get_field("faq_answer_{$i}");
+    if ($q && $a) {
+        $faqs[] = ['question' => $q, 'answer' => $a];
+    }
+}
+if (!empty($faqs)): ?>
+<!-- Wrap both columns in one accordion container to coordinate toggling -->
+<div class="accordion" id="faqAccordion">
+  <div class="row">
+    <div class="col-md-6">
+      <?php for ($i = 0; $i < 3; $i++): if (!isset($faqs[$i])) break;
+        $faq = $faqs[$i];
+        $idHeading = "faqHeading{$i}";
+        $idCollapse = "faqCollapse{$i}";
+        $isFirst = ($i === 0);
+      ?>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="<?php echo $idHeading; ?>">
+          <button class="accordion-button <?php echo $isFirst ? '' : 'collapsed'; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $idCollapse; ?>" aria-expanded="<?php echo $isFirst ? 'true' : 'false'; ?>" aria-controls="<?php echo $idCollapse; ?>">
+            <?php echo esc_html($faq['question']); ?>
+          </button>
+        </h2>
+        <div id="<?php echo $idCollapse; ?>" class="accordion-collapse collapse <?php echo $isFirst ? 'show' : ''; ?>" aria-labelledby="<?php echo $idHeading; ?>" data-bs-parent="#faqAccordion">
+          <div class="accordion-body"><?php echo wp_kses_post($faq['answer']); ?></div>
+        </div>
       </div>
+      <?php endfor; ?>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Accordion Item #2
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    <div class="col-md-6">
+      <?php for ($i = 3; $i < 6; $i++): if (!isset($faqs[$i])) break;
+        $faq = $faqs[$i];
+        $idx = $i - 3;
+        $idHeading = "faqHeading{$i}";
+        $idCollapse = "faqCollapse{$i}";
+      ?>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="<?php echo $idHeading; ?>">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $idCollapse; ?>" aria-expanded="false" aria-controls="<?php echo $idCollapse; ?>">
+            <?php echo esc_html($faq['question']); ?>
+          </button>
+        </h2>
+        <div id="<?php echo $idCollapse; ?>" class="accordion-collapse collapse" aria-labelledby="<?php echo $idHeading; ?>" data-bs-parent="#faqAccordion">
+          <div class="accordion-body"><?php echo wp_kses_post($faq['answer']); ?></div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-        Accordion Item #3
-      </button>
-    </h2>
-    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
+      <?php endfor; ?>
     </div>
   </div>
 </div>
-
-</div>
-
+<?php endif; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var container = document.getElementById('faqAccordion');
+    if (!container) return;
+    var cols = container.querySelectorAll('.col-md-6');
+    function adjustHeight() {
+        // On mobile (<768px), clear any fixed min-height to avoid empty gaps
+        if (window.innerWidth < 768) {
+            cols.forEach(function(col) { col.style.minHeight = ''; });
+            return;
+        }
+        var max = 0;
+        cols.forEach(function(col) {
+            col.style.minHeight = '';
+            var h = col.offsetHeight;
+            if (h > max) max = h;
+        });
+        cols.forEach(function(col) {
+            col.style.minHeight = max + 'px';
+        });
+    }
+    adjustHeight();
+    window.addEventListener('resize', adjustHeight);
+    container.addEventListener('shown.bs.collapse', adjustHeight);
+    container.addEventListener('hidden.bs.collapse', adjustHeight);
+});
+</script>
 <?php
 get_footer();
 ?>

@@ -5,3 +5,14 @@ Logo snippet:
             <img src="<?php echo esc_url($header_logo); ?>" alt="Logo" class="img-fluid">
         </div>
     <?php endif; ?>
+
+
+    button
+
+
+    
+    <div class="text-center mb-5" >
+            <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary opalp-bg-primary-button btn-lg" style="margin-bottom: 50px;">
+                <?php echo esc_html($button_1_text); ?>
+            </a>
+        </div>
