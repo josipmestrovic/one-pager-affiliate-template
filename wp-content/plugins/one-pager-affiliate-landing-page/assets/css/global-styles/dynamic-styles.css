@@ -310,3 +310,103 @@ li {
         padding: 28px 0 42px;
     }
 }
+
+/* Video Testimonials Layout */
+.video-testimonials .video-grid .video-item {
+    max-width: 360px;
+    margin: 0 auto;
+}
+.video-testimonials .video-box {
+    position: relative;
+    width: 100%;
+    padding-top: 177.78%; /* 9:16 vertical aspect ratio */
+    overflow: hidden;
+}
+.video-testimonials .video-box video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.video-testimonials .video-box .play-button {
+    z-index: 2;
+}
+.video-testimonials .video-item .testimonial-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.video-item {
+    padding:0 !important;
+}
+
+/* Custom Video Slider */
+.video-slider-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.video-slider-track {
+  display: flex;
+  gap: 26px;
+  transition: transform 0.4s ease;
+}
+.video-slider-wrapper .video-item {
+  flex: 0 0 33.333%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+.video-slider-wrapper .video-prev,
+.video-slider-wrapper .video-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.video-slider-wrapper .video-prev { left: 8px; }
+.video-slider-wrapper .video-next { right: 8px; }
+.video-slider-wrapper button:focus { outline: none; }
+
+
+/* Responsive slider items: 1 per view on mobile, 2 on tablet, 3 on desktop */
+@media (max-width: 767px) {
+  .video-slider-wrapper .video-item {
+    flex: 0 0 100% !important;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .video-slider-wrapper .video-item {
+    flex: 0 0 50% !important;
+  }
+}
+@media (min-width: 992px) {
+  .video-slider-wrapper .video-item {
+    flex: 0 0 33.333% !important;
+  }
+}
+
+/* Hero video overrides: ensure hero section videos keep native aspect ratio */
+.desktop-video-wrapper .video-wrapper,
+.mobile-video-wrapper .video-wrapper {
+    position: relative !important;
+    padding-top: 0 !important;
+    overflow: visible !important;
+}
+.desktop-video-wrapper .video-wrapper video,
+.mobile-video-wrapper video {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+}

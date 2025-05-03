@@ -3,11 +3,12 @@
  * Plugin Name: One-Pager Affiliate Landing Page
  * Plugin URI: https://e-com.hr
  * Description: A simple one-page affiliate landing page plugin.
- * Version: 0.9.2
+ * Version: 9.3.0
  * Author: E-COM
  * Author URI: https://e-com.hr
  *
  * Changelog:
+ * - 9.3.0: Commented countdown logic PHP file.
  * - 0.9.2: Added FAQs accordion, connected fields in CMS, reviews moved to a dedicated Reviews tab.
  */
 

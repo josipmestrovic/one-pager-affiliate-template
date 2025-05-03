@@ -92,6 +92,27 @@ $get_primary_btn_color = get_field('primary_button_color');
     padding-right: 0;
 }
 
+/* Ensure play buttons appear above video and are clickable */
+.video-box .play-button {
+    cursor: pointer;
+    z-index: 2;
+    pointer-events: auto;
+}
+.hero-play-button, .play-button {
+    pointer-events: auto;
+}
+
+/* Add border radius to video boxes */
+.video-testimonials .video-box {
+    border-radius: 20px;
+    overflow: hidden; /* Ensure content respects the border radius */
+    position: relative; /* Needed for absolute positioning of children like play button */
+}
+.video-testimonials .video-box video {
+    display: block; /* Remove extra space below video */
+    width: 100%;
+}
+
 /* Add padding to the content wrapper inside each carousel item */
 .video-testimonials .carousel-content-wrapper {
     padding-left: 11%; /* arrow width (10%) + 1% gap */
@@ -103,52 +124,42 @@ $get_primary_btn_color = get_field('primary_button_color');
 /* On small screens (≤600px), move controls below content */
 @media (max-width: 600px) {
     #videoTestimonialsCarousel {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
         text-align: center;
     }
+    
+    /* Control wrapper for better positioning */
+    .video-testimonials .carousel-controls-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+    
     .video-testimonials .carousel-control-prev,
     .video-testimonials .carousel-control-next {
         position: relative !important;
         display: inline-block !important;
-        width: auto !important;
+        width: 40px !important;
+        height: 40px !important;
         transform: none !important;
-        background: transparent !important;
-        margin: 10px 5px 0 !important;
+        background-color: transparent !important;
+        margin: 0 10px !important;
         left: auto !important;
         right: auto !important;
+        opacity: 0.7;
+    }
+    
+    /* Match the style of side arrows */
+    .video-testimonials .carousel-control-prev:hover,
+    .video-testimonials .carousel-control-next:hover {
+        opacity: 0.9;
     }
 }
 
-/* Facts & Use Inline Overrides */
-.facts-use .facts-list ul {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.facts-use .facts-list ul .list-inline-item {
-    display: inline-flex !important;
-    align-items: center;
-}
-.facts-use .label-images {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 0.5rem;
-}
-.facts-use .label-images img {
-    display: inline-block;
-    height: auto;
-    max-height: 50px;
-}
-/* FAQs Accordion: two-column fixed layout */
-/*
-#faqAccordion {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, auto);
-    grid-auto-flow: column;
-    gap: 1rem;
+/* Initially hide the prev button on load as we'll always start with first slide active */
+#videoTestimonialsCarousel .carousel-control-prev {
+    display: none;
 }
 @media (max-width: 768px) {
     #faqAccordion {
@@ -168,6 +179,144 @@ $get_primary_btn_color = get_field('primary_button_color');
     #faqAccordion .col-md-6 .accordion {
         flex: 1;
     }
+}
+
+/* Video testimonials responsive behavior */
+@media (min-width: 800px) {
+  .video-testimonials .mobile-carousel-view {
+    display: none;
+  }
+}
+
+@media (max-width: 799px) {
+  .video-testimonials .desktop-carousel-view {
+    display: none;
+  }
+  
+  /* Ensure proper spacing in mobile view */
+  .video-testimonials .carousel-item .col-12 {
+    padding: 0 15px;
+  }
+  
+  /* Improve control visibility on mobile */
+  .video-testimonials .carousel-control-prev,
+  .video-testimonials .carousel-control-next {
+    width: 15%;
+    opacity: 0.8;
+  }
+}
+
+/* Fix for mobile carousel controls when they appear below the content */
+@media (max-width: 600px) {
+  /* Use display none/block instead of visibility for controls */
+  #videoTestimonialsCarousel .carousel-controls-wrapper {
+    margin-top: 15px;
+  }
+  
+  #videoTestimonialsCarousel .carousel-controls-wrapper button {
+    transition: opacity 0.3s;
+  }
+  
+  /* Override any display property set dynamically */
+  #videoTestimonialsCarousel .carousel-controls-wrapper button.d-none,
+  #videoTestimonialsCarousel .carousel-control-prev[style*="display: none"],
+  #videoTestimonialsCarousel .carousel-control-next[style*="display: none"] {
+    display: none !important;
+  }
+}
+
+/* Initially hide the prev button on load as we'll always start with first slide active */
+#videoTestimonialsCarousel .carousel-control-prev {
+  display: none;
+}
+
+/* Video testimonials mobile fixes */
+@media (max-width: 600px) {
+  /* Make carousel controls more visible and responsive */
+  .video-testimonials .carousel-controls-wrapper {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    height: 40px; /* Fixed height to prevent layout shifts */
+  }
+  
+  /* Ensure controls have consistent size and appearance */
+  #videoCarouselPrev, #videoCarouselNext {
+    position: relative !important;
+    width: 40px !important;
+    height: 40px !important;
+    opacity: 1 !important;
+    transition: opacity 0.2s ease-in-out !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    background-color: transparent !important;
+    border: none !important;
+  }
+  
+  /* Proper visibility control */
+  #videoCarouselPrev.control-hidden,
+  #videoCarouselNext.control-hidden {
+    pointer-events: none !important;
+    opacity: 0.15 !important;
+  }
+
+  /* Ensure the right style consistency for slide containers */
+  .video-testimonials .mobile-carousel-view .carousel-item {
+    transition: transform .6s ease;
+  }
+}
+
+/* Make carousel arrows more visually consistent */
+.video-testimonials .carousel-control-prev-icon,
+.video-testimonials .carousel-control-next-icon {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+}
+
+/* Reset carousel control styles that may have been broken */
+.video-testimonials .carousel-control-prev,
+.video-testimonials .carousel-control-next {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10%;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-testimonials .carousel-control-prev {
+  left: 0;
+  right: auto;
+}
+
+.video-testimonials .carousel-control-next {
+  right: 0;
+  left: auto;
+}
+
+/* Responsive mobile adjustments */
+@media (max-width: 600px) {
+  .video-testimonials .carousel-controls-wrapper {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .video-testimonials .carousel-control-prev,
+  .video-testimonials .carousel-control-next {
+    position: relative !important;
+    width: 40px !important;
+    height: 40px !important;
+    margin: 0 5px;
+    transform: none !important;
+  }
 }
 </style>
 <?php
@@ -237,11 +386,17 @@ $video_description = get_field('video_description');
   <div class="row gx-5 align-items-center">
     <div class="col-md-6 desktop-video-wrapper" style="margin-top: -10px;">
       <?php if ($hero_video_file): ?>
-        <div class="video-wrapper">
-          <video controls class="img-fluid rounded">
+        <div class="video-wrapper position-relative">
+          <video playsinline muted preload="metadata" class="img-fluid w-100">
             <source src="<?php echo esc_url($hero_video_file); ?>" type="video/mp4">
             Your browser does not support the video tag.
           </video>
+          <div class="hero-play-button position-absolute top-50 start-50 translate-middle" style="cursor:pointer; z-index:2;">
+            <svg width="80" height="80" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.5)"/>
+              <polygon points="24,18 24,42 42,30" fill="#fff"/>
+            </svg>
+          </div>
         </div>
       <?php elseif ($hero_video_url): ?>
         <div class="ratio ratio-16x9 ">
@@ -306,12 +461,18 @@ $video_description = get_field('video_description');
 
         <?php // Mobile/video on small/tablet: show between subheadline and pricing ?>
         <?php if ($hero_video_file || $hero_video_url || $fallback_hero_image): ?>
-            <div class="mobile-video-wrapper mb-4">
+            <div class="mobile-video-wrapper mb-4 position-relative">
                 <?php if ($hero_video_file): ?>
-                    <video controls class="img-fluid rounded">
+                    <video playsinline muted preload="metadata" class="w-100">
                         <source src="<?php echo esc_url($hero_video_file); ?>" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
+                    <div class="hero-play-button position-absolute top-50 start-50 translate-middle" style="cursor:pointer; z-index:2;">
+                      <svg width="80" height="80" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.5)"/>
+                        <polygon points="24,18 24,42 42,30" fill="#fff"/>
+                      </svg>
+                    </div>
                 <?php elseif ($hero_video_url): ?>
                     <div class="ratio ratio-16x9">
                         <iframe src="<?php echo esc_url($hero_video_url); ?>" frameborder="0" allowfullscreen class="rounded"></iframe>
@@ -466,73 +627,14 @@ $video_description = get_field('video_description');
     </section>
     <?php endif; ?>
 
+
+
+    <?php echo do_shortcode('[testimonial_video_carousel orientation="vertical"]'); ?>
+
+
+    
     <?php
-    // Video Testimonials Section
-    $videos = array(
-        array('file' => get_field('video_testimonial_1_file'), 'description' => get_field('video_testimonial_1_description')),
-        array('file' => get_field('video_testimonial_2_file'), 'description' => get_field('video_testimonial_2_description')),
-        array('file' => get_field('video_testimonial_3_file'), 'description' => get_field('video_testimonial_3_description')),
-    );
-    $valid_videos = array_filter($videos, function($v) { return !empty($v['file']); });
-
-    if (!empty($valid_videos)): ?>
-    <section class="video-testimonials py-5">
-        <div class="container">
-            <h2 class="mb-4 text-center">Video Testimonials</h2>
-            <?php if (count($valid_videos) > 1): ?>
-            <div id="videoTestimonialsCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <?php foreach ($valid_videos as $index => $video): ?>
-                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                        <div class="carousel-content-wrapper">
-                        <div class="row align-items-center">
-                            <div class="col-md-7 mb-3 mb-md-0">
-                                <video controls class="img-fluid rounded" style="max-height: 600px; width: 100%; object-fit: contain;">
-                                    <source src="<?php echo esc_url($video['file']); ?>" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                            <div class="col-md-5">
-                                <?php if (!empty($video['description'])): ?>
-                                <p><?php echo esc_html($video['description']); ?></p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        </div> <!-- /.carousel-content-wrapper -->
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#videoTestimonialsCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#videoTestimonialsCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-            <?php else: // Only one video
-                $video = reset($valid_videos); ?>
-            <div class="row align-items-center">
-                <div class="col-md-7 mb-3 mb-md-0">
-                     <video controls class="img-fluid rounded" style="max-height: 600px; width: 100%; object-fit: contain;">
-                        <source src="<?php echo esc_url($video['file']); ?>" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <div class="col-md-5">
-                    <?php if (!empty($video['description'])): ?>
-                    <p><?php echo esc_html($video['description']); ?></p>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <?php endif; ?>
-        </div>
-    </section>
-    <?php endif; ?>  <!-- end Video Testimonials -->
-
   
-    <?php
     // Relocated Facts & Use Section
     $facts_title = get_field('facts_use_title');
     $facts_content = get_field('facts_use_content');
@@ -549,6 +651,8 @@ $video_description = get_field('video_description');
         <div class="row">
           <div class="col-md-6">
             <h2 class="mb-4"><?php echo esc_html($facts_title ?: 'Facts & Use'); ?></h2>
+            
+            
             <?php if ($facts_content): ?>
               <div><?php echo wp_kses_post($facts_content); ?></div>
             <?php endif; ?>
@@ -713,92 +817,8 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
 </div>
 <?php endif; ?>
 
-    <!-- Blurbs Section -->
-    <div class="blurbs row justify-content-between text-center mb-5" style="max-width: 1200px; margin: 0 auto;">
-        <?php for ($i = 1; $i <= 3; $i++): ?>
-            <?php 
-                $icon_class = get_field("blurb_{$i}_icon_class");
-                $title = get_field("blurb_{$i}_title");
-                $text = get_field("blurb_{$i}_text");
-            ?>
-            <?php if ($title && $text): ?>
-                <div class="col-md-3 col-sm-6 mb-4 text-start">
-                    <div class="blurb">
-                        <i class="<?php echo esc_attr($icon_class); ?> fa-3x mb-3"></i>
-                        <h3><?php echo esc_html($title); ?></h3>
-                        <p><?php echo esc_html($text); ?></p>
-                    </div>
-                </div>
-            <?php endif; ?>
-        <?php endfor; ?>
-    </div>
-
-    <div class="common-section-1 row align-items-center mb-5" style="max-width: 1200px; margin: 0 auto;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="<?php echo esc_url(get_field('section_1_image')); ?>" alt="Section 1 Image" class="img-fluid">
-                </div>
-                <div class="col-md-6">
-                    <h2><?php echo esc_html(get_field('section_1_title')); ?></h2>
-                    <div><?php echo wp_kses_post(get_field('section_1_paragraph')); ?></div>
-                    <a href="<?php echo esc_url(get_field('button_1_url')); ?>" class="btn btn-secondary">
-                        <?php echo esc_html(get_field('button_1_text')); ?>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="common-section-2 row align-items-center mb-5" style="max-width: 1200px; margin: 0 auto;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 order-md-2">
-                    <img src="<?php echo esc_url(get_field('section_2_image')); ?>" alt="Section 2 Image" class="img-fluid">
-                </div>
-                <div class="col-md-6 order-md-1">
-                    <h2><?php echo esc_html(get_field('section_2_title')); ?></h2>
-                    <div><?php echo wp_kses_post(get_field('section_2_paragraph')); ?></div>
-                    <a href="<?php echo esc_url(get_field('button_1_url')); ?>" class="btn btn-secondary">
-                        <?php echo esc_html(get_field('button_1_text')); ?>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
    
-    <div class="testimonials row justify-content-between text-center mb-5" style="max-width: 1200px; margin: 0 auto;">
-        <?php for ($i = 1; $i <= 3; $i++): ?>
-            <?php 
-                $text = get_field("testimonial_{$i}_text");
-                $author = get_field("testimonial_{$i}_author");
-                $image = get_field("testimonial_{$i}_image");
-            ?>
-            <?php if ($text): ?>
-                <div class="col-md-3 col-sm-6 mb-4">
-                    
-                    <div class="testimonial">
-                        <?php if ($image): ?>
-                            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($author); ?>" class="rounded-circle mb-3" style="width: 80px; height: 80px;">
-                        <?php endif; ?>
-                        <div class="stars mb-2">
-                            <i class="fas fa-star" style="color: #FFD700;"></i>
-                            <i class="fas fa-star" style="color: #FFD700;"></i>
-                            <i class="fas fa-star" style="color: #FFD700;"></i>
-                            <i class="fas fa-star" style="color: #FFD700;"></i>
-                            <i class="fas fa-star" style="color: #FFD700;"></i>
-                        </div>
-                        <blockquote class="blockquote">
-                            <p class="mb-0">"<?php echo esc_html($text); ?>"</p>
-                            <?php if ($author): ?>
-                                <footer class="blockquote-footer mt-2">- <?php echo esc_html($author); ?></footer>
-                            <?php endif; ?>
-                        </blockquote>
-                    </div>
-                </div>
-            <?php endif; ?>
-        <?php endfor; ?>
-    </div>
+ 
 
     <div class="text-center mb-4">
         <h2 class="mb-3">Reviews</h2>
@@ -807,7 +827,6 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
         $number_of_reviews = get_field('number_of_reviews');
         ?>
         <div class="d-flex align-items-top justify-content-center mb-3">
-            <h4 class="mb-0 me-3" style="font-weight:600 !important; "><?php echo esc_html($product_name); ?></h4>
             <div class="product-rating d-flex align-items-center mb-0">
                 <div class="stars me-2" data-rating="<?php echo esc_attr(number_format((float)$product_rating, 1)); ?>">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -835,11 +854,48 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
         </div>
     </div>
 
-    <div class="text-center mb-5">
-        <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary opalp-bg-primary-button btn-lg">
-            <?php echo esc_html($button_1_text); ?>
-        </a>
+      
+    <div class="testimonials row justify-content-between text-center mb-5" style="max-width: 1200px; margin: 0 auto;">
+        <?php for ($i = 1; $i <= 3; $i++): ?>
+            <?php 
+                $text = get_field("testimonial_{$i}_text");
+                $author = get_field("testimonial_{$i}_author");
+                $image = get_field("testimonial_{$i}_image");
+            ?>
+            <?php if ($text): ?>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    
+                    <div class="testimonial">
+                        <?php if ($image): ?>
+                            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($author); ?>" class="rounded-circle mb-3" style="width: 80px; height: 80px;">
+                        <?php endif; ?>
+                        <div class="stars mb-2">
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                        </div>  
+                        <blockquote class="blockquote">
+                            <p class="mb-0">"<?php echo esc_html($text); ?>"</p>
+                            <?php if ($author): ?>
+                                <footer class="blockquote-footer mt-2">- <?php echo esc_html($author); ?></footer>
+                            <?php endif; ?>
+                        </blockquote>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php endfor; ?>
     </div>
+
+ 
 
 
     <!-- Insert dynamic FAQs accordion using ACF fields -->
@@ -924,10 +980,6 @@ document.addEventListener('DOMContentLoaded', function() {
     container.addEventListener('hidden.bs.collapse', adjustHeight);
 });
 </script>
-<?php
-get_footer();
-?>
-
 <?php if ($display_top_bar && !empty($countdown_date_str)): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -969,3 +1021,79 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <?php endif; ?>
+<script>
+// Keep track of the currently playing video element
+let currentlyPlayingVideo = null;
+
+// Function to pause a video and reset its UI
+function pauseAndResetVideo(videoElement) {
+    if (videoElement && !videoElement.paused) {
+        videoElement.pause();
+        videoElement.removeAttribute('controls');
+        // Find the play button and testimonial name associated with this video
+        const container = videoElement.closest('.position-relative');
+        if (container) {
+            const playButton = container.querySelector('.play-button, .hero-play-button');
+            if (playButton) {
+                playButton.style.display = 'block'; // Or 'flex' or 'inline-block' depending on original style
+            }
+            const testimonialName = container.querySelector('.testimonial-name');
+            if (testimonialName) {
+                testimonialName.style.display = ''; // Reset display style to default
+            }
+        }
+        if (currentlyPlayingVideo === videoElement) {
+             currentlyPlayingVideo = null;
+        }
+    }
+}
+
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.play-button, .hero-play-button');
+    if (!btn) return;
+    var container = btn.closest('.position-relative');
+    var video = container.querySelector('video');
+    if (!video) return;
+
+    // Pause the previously playing video, if any
+    if (currentlyPlayingVideo && currentlyPlayingVideo !== video) {
+        pauseAndResetVideo(currentlyPlayingVideo);
+    }
+
+    // Play the new video
+    btn.style.display = 'none';
+    // Hide testimonial name when playing starts
+    const testimonialName = container.querySelector('.testimonial-name');
+    if (testimonialName) {
+        testimonialName.style.display = 'none';
+    }
+    video.muted = false;
+    video.volume = 1;
+    video.autoplay = true;
+    video.setAttribute('controls', '');
+    video.play().then(() => {
+        currentlyPlayingVideo = video; // Update the currently playing video
+    }).catch(function(err){ 
+        console.error('Playback failed:', err); 
+        // If playback fails, reset the UI
+        btn.style.display = 'block';
+        video.removeAttribute('controls');
+    });
+});
+
+// Add event listener for carousel slide event
+const videoCarouselElement = document.getElementById('videoTestimonialsCarousel');
+if (videoCarouselElement) {
+    videoCarouselElement.addEventListener('slide.bs.carousel', function (event) {
+        // event.from is the index of the outgoing slide
+        const outgoingSlide = event.target.querySelectorAll('.carousel-item')[event.from];
+        if (outgoingSlide) {
+            const videosInOutgoingSlide = outgoingSlide.querySelectorAll('video');
+            videosInOutgoingSlide.forEach(video => {
+                pauseAndResetVideo(video);
+            });
+        }
+    });
+}
+</script>
+<?php get_footer(); ?>

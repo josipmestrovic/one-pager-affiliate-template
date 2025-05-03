@@ -26,3 +26,10 @@ For support, please visit our website at [e-com.hr](http://e-com.hr).
 ## Changelog
 - **0.9.2** - Added FAQs accordion, connected fields from CMS, reviews moved to a dedicated Reviews tab.
 - **1.0.0** - Initial release of the One-Pager Affiliate Landing Page plugin.
+
+
+   <div class="text-center mb-5">
+        <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary opalp-bg-primary-button btn-lg">
+            <?php echo esc_html($button_1_text); ?>
+        </a>
+    </div>
