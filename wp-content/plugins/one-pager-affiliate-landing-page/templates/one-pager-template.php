@@ -13,8 +13,40 @@ $get_primary_btn_color = get_field('primary_button_color');
 ?>
 <style>
 <?php if ($get_primary_btn_color): ?>
-:root { --primary-button-bg: <?php echo esc_attr($get_primary_btn_color); ?>; }
+:root { 
+    --primary-button-bg: <?php echo esc_attr($get_primary_btn_color); ?>; 
+    --sticky-footer-bg: #ffffff; /* Adding the missing sticky footer background color */
+}
+<?php else: ?>
+:root {
+    --sticky-footer-bg: #ffffff; /* Default value if primary button color is not set */
+}
 <?php endif; ?>
+/* Fix horizontal scrolling issue caused by nested full-width sections */
+body, html {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    width: 100%;
+    max-width: 100%;
+}
+.video-carousel-container {
+    width: 100% !important; /* Override the 100vw */
+    position: static !important; /* Override the relative position */
+    left: auto !important; /* Reset left offset */
+    right: auto !important; /* Reset right offset */
+    margin-left: 0 !important; /* Reset negative margin */
+    margin-right: 0 !important; /* Reset negative margin */
+    background-color: var(--featured-bg) !important; /* Use variable instead of hard-coded color */
+}
+section[style*="background-color: var(--featured-bg)"] {
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+    max-width: none !important;
+}
+
 .discount-percentage,
 .new-price {
     color: var(--discount-text-color);
@@ -181,30 +213,7 @@ $get_primary_btn_color = get_field('primary_button_color');
     }
 }
 
-/* Video testimonials responsive behavior */
-@media (min-width: 800px) {
-  .video-testimonials .mobile-carousel-view {
-    display: none;
-  }
-}
 
-@media (max-width: 799px) {
-  .video-testimonials .desktop-carousel-view {
-    display: none;
-  }
-  
-  /* Ensure proper spacing in mobile view */
-  .video-testimonials .carousel-item .col-12 {
-    padding: 0 15px;
-  }
-  
-  /* Improve control visibility on mobile */
-  .video-testimonials .carousel-control-prev,
-  .video-testimonials .carousel-control-next {
-    width: 15%;
-    opacity: 0.8;
-  }
-}
 
 /* Fix for mobile carousel controls when they appear below the content */
 @media (max-width: 600px) {
@@ -576,31 +585,34 @@ $video_description = get_field('video_description');
   </div>
 </div>
 
+</div><!-- closing container div before full-width section -->
 
-<div class="affiliate-landing-page container">
-    <?php
-        $as_seen_on_title = get_field('as_seen_on_title');
-        $as_seen_on_images = array(
-            get_field('as_seen_on_image_1'),
-            get_field('as_seen_on_image_2'),
-            get_field('as_seen_on_image_3'),
-        );
-    ?>
-    <?php if ($as_seen_on_title): ?>
-    <section class="as-seen-on-section opalp-bg-featured" style="width:100vw; position:relative; left:50%; right:50%; margin-left:-50vw; margin-right:-50vw; padding:40px 0;">
+<?php
+    $as_seen_on_title = get_field('as_seen_on_title');
+    $as_seen_on_images = array(
+        get_field('as_seen_on_image_1'),
+        get_field('as_seen_on_image_2'),
+        get_field('as_seen_on_image_3'),
+    );
+?>
+<?php if ($as_seen_on_title): ?>
+<section class="as-seen-on-section" style="position:relative; padding:40px 0; background-color: var(--featured-bg); ">
+    <div class="container" style="background-color: var(--featured-bg);"><!-- Inner container for content alignment -->
         <?php if ($as_seen_on_title): ?>
             <h2 class="text-center mb-4"><?php echo esc_html($as_seen_on_title); ?></h2>
         <?php endif; ?>
-        <div class="d-flex justify-content-center align-items-center" style="overflow-x:hidden;">
+        <div class="d-flex justify-content-center align-items-center flex-wrap" style="overflow-x:hidden;">
             <?php foreach ($as_seen_on_images as $img): if ($img): ?>
-                <div style="flex:0 1 auto; margin:0 65px;">
+                <div style="flex:0 1 auto; margin:0 65px 20px;">
                     <img src="<?php echo esc_url($img); ?>" alt="" style="max-height:88px; width:auto; aspect-ratio:1/1; object-fit:contain;" />
                 </div>
             <?php endif; endforeach; ?>
         </div>
-    </section>
-    <?php endif; ?>
+    </div>
+</section>
+<?php endif; ?>
 
+<div class="affiliate-landing-page container"><!-- opening new container div after full-width section -->
     <?php
         // Fetch Short Product About fields
         $short_about_title = get_field('short_about_title');
@@ -627,11 +639,11 @@ $video_description = get_field('video_description');
     </section>
     <?php endif; ?>
 
+</div><!-- closing affiliate-landing-page container div before testimonial video carousel -->
 
+<?php echo do_shortcode('[testimonial_video_carousel orientation="vertical"]'); ?>
 
-    <?php echo do_shortcode('[testimonial_video_carousel orientation="vertical"]'); ?>
-
-
+<div class="affiliate-landing-page container"><!-- opening new affiliate-landing-page container div after testimonial video carousel -->
     
     <?php
   
@@ -718,64 +730,113 @@ $video_description = get_field('video_description');
     <?php endif; ?>
 
 
-  <!-- What Do Experts Say Section -->
-    <?php
-    $experts_title = get_field('experts_title');
-    $experts = array(
-        array('video' => get_field('expert_1_video'), 'image' => get_field('expert_1_image'), 'name' => get_field('expert_1_name'), 'title' => get_field('expert_1_title'), 'text' => get_field('expert_1_text')),
-        array('video' => get_field('expert_2_video'), 'image' => get_field('expert_2_image'), 'name' => get_field('expert_2_name'), 'title' => get_field('expert_2_title'), 'text' => get_field('expert_2_text')),
-        array('video' => get_field('expert_3_video'), 'image' => get_field('expert_3_image'), 'name' => get_field('expert_3_name'), 'title' => get_field('expert_3_title'), 'text' => get_field('expert_3_text')),
-    );
-    $expert_videos = array_filter(array_column($experts, 'video'));
-    if (!empty($expert_videos)): ?>
-    <section class="experts-say py-5">
-        <div class="container">
-            <?php if ($experts_title): ?><h2 class="mb-4 text-center"><?php echo esc_html($experts_title); ?></h2><?php endif; ?>
-            <div id="expertsCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <?php foreach ($experts as $index => $expert): if (empty($expert['video'])) continue; ?>
-                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <?php if ($expert['image']): ?><img src="<?php echo esc_url($expert['image']); ?>" alt="" class="img-fluid mb-3" /><?php endif; ?>
-                                <?php if ($expert['name']): ?><h5><?php echo esc_html($expert['name']); ?></h5><?php endif; ?>
-                                <?php if ($expert['title']): ?><h6 class="text-muted"><?php echo esc_html($expert['title']); ?></h6><?php endif; ?>
-                                <?php if ($expert['text']): ?><p><?php echo esc_html($expert['text']); ?></p><?php endif; ?>
-                            </div>
-                            <div class="col-md-6">
-                                <video controls class="img-fluid rounded"><source src="<?php echo esc_url($expert['video']); ?>" type="video/mp4"></video>
-                            </div>
+</div><!-- closing affiliate-landing-page container div before experts section -->
+
+<?php
+$experts_title = get_field('experts_title');
+$experts = array(
+    array('video' => get_field('expert_1_video'), 'image' => get_field('expert_1_image'), 'name' => get_field('expert_1_name'), 'title' => get_field('expert_1_title'), 'text' => get_field('expert_1_text')),
+    array('video' => get_field('expert_2_video'), 'image' => get_field('expert_2_image'), 'name' => get_field('expert_2_name'), 'title' => get_field('expert_2_title'), 'text' => get_field('expert_2_text')),
+    array('video' => get_field('expert_3_video'), 'image' => get_field('expert_3_image'), 'name' => get_field('expert_3_name'), 'title' => get_field('expert_3_title'), 'text' => get_field('expert_3_text')),
+);
+
+// Filter out empty experts
+$experts = array_filter($experts, function($expert) {
+    return !empty($expert['name']) || !empty($expert['video']) || !empty($expert['image']);
+});
+
+if (!empty($experts_title) || !empty($experts)):
+?>
+<section style="position:relative; padding:40px 0; background-color: var(--featured-bg);">
+    <div class="container" style="background-color: var(--featured-bg);"><!-- Inner container for content alignment -->
+        <?php if (!empty($experts_title)): ?>
+            <h2 class="text-center mb-4"><?php echo esc_html($experts_title); ?></h2>
+        <?php endif; ?>
+        
+        <div class="experts-grid row">
+            <?php foreach ($experts as $expert): ?>
+                <?php if (!empty($expert['name']) || !empty($expert['video']) || !empty($expert['image'])): ?>
+                    <div class="expert-item col-12 col-md-4 mb-4">
+                        <div class="expert-content h-100">
+                            <?php if (!empty($expert['video'])): ?>
+                                <div class="expert-video-container position-relative mb-3" style="aspect-ratio: 16/9; background-color: #f0f0f0; display: block; overflow: hidden; border-radius: 20px;">
+                                    <video class="expert-video" playsinline preload="metadata" poster="<?php echo !empty($expert['image']) ? esc_url($expert['image']) : ''; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                                        <source src="<?php echo esc_url($expert['video']); ?>" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <div class="video-play-button position-absolute top-50 start-50 translate-middle" style="cursor: pointer; z-index: 10;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5)); background-color: var(--primary-button-bg, #0d6efd); border-radius: 50%; padding: 12px;">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            <?php elseif (!empty($expert['image'])): ?>
+                                <div class="expert-image-container mb-3" style="aspect-ratio: 16/9; background-color: #f0f0f0; display: block; overflow: hidden; position: relative; border-radius: 20px;">
+                                    <img src="<?php echo esc_url($expert['image']); ?>" alt="<?php echo esc_attr($expert['name'] ?? 'Expert'); ?>" class="expert-image" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($expert['name'])): ?>
+                                <h4 class="expert-name mb-1"><?php echo esc_html($expert['name']); ?></h4>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($expert['title'])): ?>
+                                <h5 class="expert-title mb-2 text-muted"><?php echo esc_html($expert['title']); ?></h5>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($expert['text'])): ?>
+                                <div class="expert-text"><?php echo wp_kses_post($expert['text']); ?></div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    <?php endforeach; ?>
-                </div>
-                <?php if (count($expert_videos) > 1): ?>
-                <button class="carousel-control-prev" type="button" data-bs-target="#expertsCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Previous</span></button>
-                <button class="carousel-control-next" type="button" data-bs-target="#expertsCarousel" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span></button>
                 <?php endif; ?>
-            </div>
+            <?php endforeach; ?>
         </div>
-    </section>
-    <?php elseif ($experts_title || count(array_filter(array_column($experts, 'image')))): ?>
-    <section class="experts-say py-5">
-        <div class="container">
-            <?php if ($experts_title): ?><h2 class="mb-4 text-center"><?php echo esc_html($experts_title); ?></h2><?php endif; ?>
-            <div class="row">
-                <?php
-                $valid = array_filter($experts, function($e){ return $e['image']||$e['name']||$e['title']||$e['text'];});
-                $cols = count($valid)?12/count($valid):12;
-                foreach ($valid as $expert): ?>
-                <div class="col-md-<?php echo esc_attr($cols); ?> mb-4">
-                    <?php if ($expert['image']): ?><img src="<?php echo esc_url($expert['image']); ?>" alt="" class="img-fluid mb-3" /><?php endif; ?>
-                    <?php if ($expert['name']): ?><h5><?php echo esc_html($expert['name']); ?></h5><?php endif; ?>
-                    <?php if ($expert['title']): ?><h6 class="text-muted"><?php echo esc_html($expert['title']); ?></h6><?php endif; ?>
-                    <?php if ($expert['text']): ?><p><?php echo esc_html($expert['text']); ?></p><?php endif; ?>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const expertVideos = document.querySelectorAll('.expert-video');
+    const expertPlayButtons = document.querySelectorAll('.expert-video-container .video-play-button');
+    
+    expertPlayButtons.forEach(function(button, index) {
+        button.addEventListener('click', function() {
+            const video = expertVideos[index];
+            if (video) {
+                // Hide play button
+                button.style.display = 'none';
+                
+                // Play video
+                video.muted = false;
+                video.volume = 1;
+                video.autoplay = true;
+                video.setAttribute('controls', '');
+                video.play().catch(function(err){ 
+                    console.error('Playback failed:', err); 
+                    // If playback fails, reset the UI
+                    button.style.display = 'block';
+                    video.removeAttribute('controls');
+                });
+                
+                // Show play button when video ends
+                video.addEventListener('ended', function() {
+                    button.style.display = 'block';
+                    video.removeAttribute('controls');
+                });
+                
+                // Show play button when video paused
+                video.addEventListener('pause', function() {
+                    button.style.display = 'block';
+                });
+            }
+        });
+    });
+});
+</script>
+<?php endif; ?>
+
+<div class="affiliate-landing-page container" style="padding-bottom:0;"><!-- opening new container div after experts section -->
 
 <?php
 // More About Product Sections - Fetch Fields
@@ -820,83 +881,85 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
    
  
 
-    <div class="text-center mb-4">
-        <h2 class="mb-3">Reviews</h2>
-        <?php
-        $product_rating = get_field('product_rating');
-        $number_of_reviews = get_field('number_of_reviews');
-        ?>
-        <div class="d-flex align-items-top justify-content-center mb-3">
-            <div class="product-rating d-flex align-items-center mb-0">
-                <div class="stars me-2" data-rating="<?php echo esc_attr(number_format((float)$product_rating, 1)); ?>">
-                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <div class="star" style="position: relative; display: inline-block; width: 15px; height: 15px;">
-                            <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 1;">
-                                <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#C4C4C4"/>
-                            </svg>
-                            <?php if ($i <= floor($product_rating)): ?>
-                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2;">
-                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+<section style="width:100%; position:relative; padding:40px 0; background-color: var(--featured-bg);">
+    <div class="container" style="background-color: var(--featured-bg);"><!-- Inner container for content alignment -->
+        <div class="text-center mb-4">
+            <h2 class="mb-3">Reviews</h2>
+            <?php
+            $product_rating = get_field('product_rating');
+            $number_of_reviews = get_field('number_of_reviews');
+            ?>
+            <div class="d-flex align-items-top justify-content-center mb-3">
+                <div class="product-rating d-flex align-items-center mb-0">
+                    <div class="stars me-2" data-rating="<?php echo esc_attr(number_format((float)$product_rating, 1)); ?>">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <div class="star" style="position: relative; display: inline-block; width: 15px; height: 15px;">
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 1;">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#C4C4C4"/>
                                 </svg>
-                            <?php elseif ($i - 1 < $product_rating && $i > $product_rating): ?>
-                                <?php $percentage = ($product_rating - floor($product_rating)) * 100; ?>
-                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2; clip-path: inset(0 <?php echo 100 - $percentage; ?>% 0 0);">
-                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                </svg>
-                            <?php endif; ?>
-                        </div>
-                    <?php endfor; ?>
+                                <?php if ($i <= floor($product_rating)): ?>
+                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2;">
+                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                    </svg>
+                                <?php elseif ($i - 1 < $product_rating && $i > $product_rating): ?>
+                                    <?php $percentage = ($product_rating - floor($product_rating)) * 100; ?>
+                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; z-index: 2; clip-path: inset(0 <?php echo 100 - $percentage; ?>% 0 0);">
+                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                    </svg>
+                                <?php endif; ?>
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+                    <span style="font-weight: 600; color: #575858" class="rating-value me-2"><?php echo esc_html(number_format((float)$product_rating, 1)); ?></span>
+                    <span style="font-weight: 600; color: #575858" class="divider me-2">|</span>
+                    <span style="font-weight: 600; color: #575858" class="rating-count"><?php echo esc_html($number_of_reviews); ?> Reviews</span>
                 </div>
-                <span style="font-weight: 600; color: #575858" class="rating-value me-2"><?php echo esc_html(number_format((float)$product_rating, 1)); ?></span>
-                <span style="font-weight: 600; color: #575858" class="divider me-2">|</span>
-                <span style="font-weight: 600; color: #575858" class="rating-count"><?php echo esc_html($number_of_reviews); ?> Reviews</span>
             </div>
         </div>
-    </div>
 
-      
-    <div class="testimonials row justify-content-between text-center mb-5" style="max-width: 1200px; margin: 0 auto;">
-        <?php for ($i = 1; $i <= 3; $i++): ?>
-            <?php 
-                $text = get_field("testimonial_{$i}_text");
-                $author = get_field("testimonial_{$i}_author");
-                $image = get_field("testimonial_{$i}_image");
-            ?>
-            <?php if ($text): ?>
-                <div class="col-md-3 col-sm-6 mb-4">
-                    
-                    <div class="testimonial">
-                        <?php if ($image): ?>
-                            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($author); ?>" class="rounded-circle mb-3" style="width: 80px; height: 80px;">
-                        <?php endif; ?>
-                        <div class="stars mb-2">
-                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                </svg>
-                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                </svg>
-                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                </svg>
-                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                </svg>
-                        </div>  
-                        <blockquote class="blockquote">
-                            <p class="mb-0">"<?php echo esc_html($text); ?>"</p>
-                            <?php if ($author): ?>
-                                <footer class="blockquote-footer mt-2">- <?php echo esc_html($author); ?></footer>
+          
+        <div class="testimonials row justify-content-between text-center" style="max-width: 1200px; margin: 0 auto 40px;">
+            <?php for ($i = 1; $i <= 3; $i++): ?>
+                <?php 
+                    $text = get_field("testimonial_{$i}_text");
+                    $author = get_field("testimonial_{$i}_author");
+                    $image = get_field("testimonial_{$i}_image");
+                ?>
+                <?php if ($text): ?>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="testimonial">
+                            <?php if ($image): ?>
+                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($author); ?>" class="rounded-circle mb-3" style="width: 80px; height: 80px;">
                             <?php endif; ?>
-                        </blockquote>
+                            <div class="stars mb-2">
+                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                    </svg>
+                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                    </svg>
+                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                    </svg>
+                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                    </svg>
+                            </div>  
+                            <blockquote class="blockquote">
+                                <p class="mb-0">"<?php echo esc_html($text); ?>"</p>
+                                <?php if ($author): ?>
+                                    <footer class="blockquote-footer mt-2">- <?php echo esc_html($author); ?></footer>
+                                <?php endif; ?>
+                            </blockquote>
+                        </div>
                     </div>
-                </div>
-            <?php endif; ?>
-        <?php endfor; ?>
+                <?php endif; ?>
+            <?php endfor; ?>
+        </div>
     </div>
+</section>
 
- 
-
+<div class="affiliate-landing-page container"><!-- opening new container div after reviews section -->
 
     <!-- Insert dynamic FAQs accordion using ACF fields -->
 <?php
@@ -908,49 +971,59 @@ for ($i = 1; $i <= 6; $i++) {
         $faqs[] = ['question' => $q, 'answer' => $a];
     }
 }
-if (!empty($faqs)): ?>
-<!-- Wrap both columns in one accordion container to coordinate toggling -->
-<div class="accordion" id="faqAccordion">
-  <div class="row">
-    <div class="col-md-6">
-      <?php for ($i = 0; $i < 3; $i++): if (!isset($faqs[$i])) break;
-        $faq = $faqs[$i];
-        $idHeading = "faqHeading{$i}";
-        $idCollapse = "faqCollapse{$i}";
-        $isFirst = ($i === 0);
-      ?>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="<?php echo $idHeading; ?>">
-          <button class="accordion-button <?php echo $isFirst ? '' : 'collapsed'; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $idCollapse; ?>" aria-expanded="<?php echo $isFirst ? 'true' : 'false'; ?>" aria-controls="<?php echo $idCollapse; ?>">
-            <?php echo esc_html($faq['question']); ?>
-          </button>
-        </h2>
-        <div id="<?php echo $idCollapse; ?>" class="accordion-collapse collapse <?php echo $isFirst ? 'show' : ''; ?>" aria-labelledby="<?php echo $idHeading; ?>" data-bs-parent="#faqAccordion">
-          <div class="accordion-body"><?php echo wp_kses_post($faq['answer']); ?></div>
+if (!empty($faqs)): 
+    // Get the FAQ section title
+    $faq_section_title = get_field('faq_section_title');
+    if (empty($faq_section_title)) {
+        $faq_section_title = 'Frequently Asked Questions'; // Default title if none is set
+    }
+?>
+<div class="faq-section my-5">
+    <h2 class="text-start mb-4"><?php echo esc_html($faq_section_title); ?></h2>
+    
+    <!-- Wrap both columns in one accordion container to coordinate toggling -->
+    <div class="accordion" id="faqAccordion">
+      <div class="row">
+        <div class="col-md-6">
+          <?php for ($i = 0; $i < 3; $i++): if (!isset($faqs[$i])) break;
+            $faq = $faqs[$i];
+            $idHeading = "faqHeading{$i}";
+            $idCollapse = "faqCollapse{$i}";
+            $isFirst = ($i === 0);
+          ?>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="<?php echo $idHeading; ?>">
+              <button class="accordion-button <?php echo $isFirst ? '' : 'collapsed'; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $idCollapse; ?>" aria-expanded="<?php echo $isFirst ? 'true' : 'false'; ?>" aria-controls="<?php echo $idCollapse; ?>">
+                <?php echo esc_html($faq['question']); ?>
+              </button>
+            </h2>
+            <div id="<?php echo $idCollapse; ?>" class="accordion-collapse collapse <?php echo $isFirst ? 'show' : ''; ?>" aria-labelledby="<?php echo $idHeading; ?>" data-bs-parent="#faqAccordion">
+              <div class="accordion-body"><?php echo wp_kses_post($faq['answer']); ?></div>
+            </div>
+          </div>
+          <?php endfor; ?>
+        </div>
+        <div class="col-md-6">
+          <?php for ($i = 3; $i < 6; $i++): if (!isset($faqs[$i])) break;
+            $faq = $faqs[$i];
+            $idx = $i - 3;
+            $idHeading = "faqHeading{$i}";
+            $idCollapse = "faqCollapse{$i}";
+          ?>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="<?php echo $idHeading; ?>">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $idCollapse; ?>" aria-expanded="false" aria-controls="<?php echo $idCollapse; ?>">
+                <?php echo esc_html($faq['question']); ?>
+              </button>
+            </h2>
+            <div id="<?php echo $idCollapse; ?>" class="accordion-collapse collapse" aria-labelledby="<?php echo $idHeading; ?>" data-bs-parent="#faqAccordion">
+              <div class="accordion-body"><?php echo wp_kses_post($faq['answer']); ?></div>
+            </div>
+          </div>
+          <?php endfor; ?>
         </div>
       </div>
-      <?php endfor; ?>
     </div>
-    <div class="col-md-6">
-      <?php for ($i = 3; $i < 6; $i++): if (!isset($faqs[$i])) break;
-        $faq = $faqs[$i];
-        $idx = $i - 3;
-        $idHeading = "faqHeading{$i}";
-        $idCollapse = "faqCollapse{$i}";
-      ?>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="<?php echo $idHeading; ?>">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $idCollapse; ?>" aria-expanded="false" aria-controls="<?php echo $idCollapse; ?>">
-            <?php echo esc_html($faq['question']); ?>
-          </button>
-        </h2>
-        <div id="<?php echo $idCollapse; ?>" class="accordion-collapse collapse" aria-labelledby="<?php echo $idHeading; ?>" data-bs-parent="#faqAccordion">
-          <div class="accordion-body"><?php echo wp_kses_post($faq['answer']); ?></div>
-        </div>
-      </div>
-      <?php endfor; ?>
-    </div>
-  </div>
 </div>
 <?php endif; ?>
 <script>
@@ -1096,4 +1169,124 @@ if (videoCarouselElement) {
     });
 }
 </script>
+
+<!-- Fix: This ensures the affiliate-landing-page container is properly closed -->
+</div><!-- closing affiliate-landing-page container to fix extra whitespace -->
+
+<style>
+/* Fix for whitespace below footer */
+
+</style>
+
+<?php
+// Get sticky CTA fields
+$sticky_cta_text = get_field('sticky_cta_text');
+$sticky_button_text = get_field('sticky_button_text');
+$button_1_url = get_field('button_1_url');
+
+// Only show the sticky element if we have text for it
+if ($sticky_cta_text && $sticky_button_text):
+?>
+<div id="sticky-cta-element" class="sticky-cta-element" style="position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 1140px; z-index: 9999; padding: 0 15px; display: none;">
+    <div class="sticky-cta-inner" style="background-color: var(--sticky-footer-bg); border-radius: 60px; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div class="sticky-cta-left">
+            <div class="sticky-cta-text" style="font-weight: 600; font-size: 1.1rem;">
+                <?php echo esc_html($sticky_cta_text); ?>
+            </div>
+            <div class="sticky-payment-info d-flex align-items-center mt-2">
+                <?php if (!empty($payment_images) && is_array($payment_images)): ?>
+                    <?php
+                        $plugin_root_url = plugin_dir_url(__DIR__ . '/../one-pager-affiliate-landing-page.php');
+                        // Show only up to 3 payment images to save space
+                        $max_display = 3;
+                        $display_images = array_slice($payment_images, 0, $max_display);
+                        foreach ($display_images as $img_file): ?>
+                            <img src="<?php echo esc_url($plugin_root_url . 'assets/payments-images/' . $img_file); ?>" class="img-fluid payment-logo me-2" style="max-height: 16px;">
+                        <?php endforeach; ?>
+                    <span class="secure-payments-text" style="font-size: 0.8rem; font-weight: 600;">| Secured Payments</span>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="sticky-cta-right">
+            <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary opalp-bg-primary-button" style="white-space: nowrap; padding: 10px 20px; font-weight: 600;">
+                <?php echo esc_html($sticky_button_text); ?>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Responsive adjustments for sticky CTA */
+@media (max-width: 768px) {
+    .sticky-cta-element {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+    
+    .sticky-cta-inner {
+        padding: 12px 20px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .sticky-cta-text {
+        font-size: 0.95rem;
+    }
+    
+    .sticky-payment-info {
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+    
+    .sticky-cta-right .btn {
+        width: 100%;
+    }
+}
+
+/* Class to show the sticky CTA when user scrolls */
+.sticky-cta-element.show {
+    display: block !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stickyCta = document.getElementById('sticky-cta-element');
+    if (!stickyCta) {
+        console.log('Sticky CTA element not found!');
+        return;
+    }
+    console.log('Sticky CTA element found, initializing scroll detection');
+    
+    // Show sticky CTA after user scrolls 200px
+    const scrollThreshold = 200;
+    
+    function handleScroll() {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollY > scrollThreshold) {
+            if (!stickyCta.classList.contains('show')) {
+                console.log('Showing sticky CTA', scrollY);
+                stickyCta.classList.add('show');
+            }
+        } else {
+            if (stickyCta.classList.contains('show')) {
+                console.log('Hiding sticky CTA', scrollY);
+                stickyCta.classList.remove('show');
+            }
+        }
+    }
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initial check in case page is loaded already scrolled
+    handleScroll();
+    console.log('Initial scroll position:', window.pageYOffset);
+});
+</script>
+
+<?php endif; ?>
+
 <?php get_footer(); ?>
