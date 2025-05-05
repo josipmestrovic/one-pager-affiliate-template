@@ -10,9 +10,9 @@
 }
 
 .video-carousel-inner {
-  max-width: 1140px;
+  max-width: 80%; /* Default to 80% width for screens above 600px */
   margin: 0 auto;
-  padding: 2em 0;
+  padding: 2em 0px 5em; /* Add horizontal padding to match container */
 }
 
 .video-carousel {
@@ -28,21 +28,8 @@ html {
 .video-carousel div.video-container {
   position: relative;
   margin-bottom: .3em;
-}
-
-/* Horizontal video container (16:9) */
-.video-carousel.horizontal div.video-container {
-  padding-top: 56.25%; /* 16:9 aspect ratio */
-  width: 100%;
-}
-
-/* Vertical video container (9:16) */
-.video-carousel.vertical div.video-container {
-  padding-top: 47.78%; /* 9:16 aspect ratio (16:9 inverted) */
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
+  border-radius: 20px; /* Adding border radius to video container */
+  overflow: hidden; /* Ensure content respects the border radius */
 }
 
 /* Base video element styling */
@@ -54,7 +41,7 @@ html {
   height: 100%;
   width: auto;
   background: transparent;
-  object-fit: contain; /* Ensure ratio is preserved */
+  object-fit: cover; /* Changed from contain to cover for better edge filling */
   border-radius: 20px; /* Adding border radius to videos */
 }
 
@@ -64,7 +51,8 @@ html {
 }
 
 /* Play button overlay */
-.video-carousel .video-play-button {
+.video-carousel .video-play-button,
+.grid-video-container .video-play-button {
   position: absolute;
   top: 0;
   left: 0;
@@ -78,7 +66,8 @@ html {
   transition: opacity 0.3s ease;
 }
 
-.video-carousel .video-play-button svg {
+.video-carousel .video-play-button svg,
+.grid-video-container .video-play-button svg {
   width: 64px;
   height: 64px;
   filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
@@ -87,32 +76,79 @@ html {
   padding: 12px; /* Add some padding to fit the arrow nicely */
 }
 
-.video-carousel .video-play-button svg path {
+.video-carousel .video-play-button svg path,
+.grid-video-container .video-play-button svg path {
   fill: #ffffff; /* Keep the arrow white for better visibility */
 }
 
-.video-carousel .video-play-button.hidden {
+.video-carousel .video-play-button.hidden,
+.grid-video-container .video-play-button.hidden {
   opacity: 0;
   pointer-events: none;
 }
 
 /* Hide default video controls when not playing */
-.video-carousel video:not(.playing) {
+.video-carousel video:not(.playing),
+.grid-video-container video:not(.playing) {
   cursor: pointer;
 }
 
-.video-carousel video:not(.playing)::-webkit-media-controls {
+.video-carousel video:not(.playing)::-webkit-media-controls,
+.grid-video-container video:not(.playing)::-webkit-media-controls {
   display: none !important;
 }
 
-.video-carousel video:not(.playing)::-webkit-media-controls-panel {
+.video-carousel video:not(.playing)::-webkit-media-controls-panel,
+.grid-video-container video:not(.playing)::-webkit-media-controls-panel {
   display: none !important;
+}
+
+/* Desktop Grid Layout */
+.desktop-grid {
+  display: none;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px 50px; /* Increased vertical gap (60px) and decreased horizontal gap (20px) */
+  width: 100%;
+}
+
+.grid-video-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden; /* Ensure border radius is respected */
+  border-radius: 20px; /* Adding explicit border radius to container */
+}
+
+.grid-video-container.horizontal {
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.grid-video-container.vertical {
+  padding-top: 157.78%; /* 9:16 aspect ratio */
+  border-radius: 20px;
+}
+
+.grid-video-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Changed from contain to cover */
+  border-radius: 20px;
 }
 
 /* Tablet breakpoints */
 @media screen and (max-width: 1200px) {
   .video-carousel.vertical video {
     max-width: 200px; /* Medium size for larger tablets */
+  }
+  
+  .video-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -124,18 +160,29 @@ html {
   .video-carousel.vertical video {
     max-width: 250px; /* Larger size for smaller tablets */
   }
+  
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Mobile breakpoint - maintain existing perfect setup */
 @media screen and (max-width: 600px) {
+  .mobile-carousel {
+    display: block;
+  }
+  
+  .desktop-grid {
+    display: none;
+  }
+  
   .video-carousel.vertical div.video-container {
-    width: 90%;
-    padding-top: 177.78%; /* Maintain 9:16 ratio */
+    width: 100%;
+    padding-top: 147.78%; /* Maintain 9:16 ratio */
   }
   
   .video-carousel.vertical video {
     max-width: none; /* Remove desktop/tablet constraints */
-    min-width: 100%; /* Use full container width */
   }
   
   .video-carousel a {
@@ -146,6 +193,37 @@ html {
   .video-carousel .video-play-button svg {
     width: 48px;
     height: 48px;
+  }
+  
+  /* Reset to full width for mobile view */
+  .video-carousel-inner {
+    max-width: 100%;
+    padding: 1em;
+  }
+}
+
+/* Media query for desktop layout */
+@media screen and (min-width: 601px) {
+  .mobile-carousel {
+    display: none;
+  }
+  
+  .desktop-grid {
+    display: block;
+  }
+}
+
+/* For larger screens that follow Bootstrap's xl breakpoint */
+@media (min-width: 1200px) {
+  .video-carousel-inner {
+    max-width: 80%; /* Keep at 80% on large screens */
+  }
+}
+
+/* For extra large screens */
+@media (min-width: 1400px) {
+  .video-carousel-inner {
+    max-width: 1296px; /* Keep at 80% on extra large screens */
   }
 }
 

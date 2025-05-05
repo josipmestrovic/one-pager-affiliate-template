@@ -108,8 +108,14 @@ class Testimonial_Video_Carousel {
             
             <div class="video-carousel-container">
                 <div class="video-carousel-inner">
-                    <div class="video-carousel <?php echo esc_attr($atts['orientation']); ?>" id="<?php echo esc_attr($carousel_id); ?>">
-                        <h2 class="mb-4" style="text-align: center;">Testimonials</h2>
+                    <!-- Mobile Carousel (less than 600px) -->
+                    <div class="mobile-carousel video-carousel <?php echo esc_attr($atts['orientation']); ?>" id="<?php echo esc_attr($carousel_id); ?>">
+                        <?php 
+                        // Get the video testimonials title from ACF
+                        $video_testimonials_title = function_exists('get_field') ? get_field('video_testimonials_title') : 'Testimonials';
+                        if (empty($video_testimonials_title)) $video_testimonials_title = 'Testimonials';
+                        ?>
+                        <h2 class="mb-4" style="text-align: center;"><?php echo esc_html($video_testimonials_title); ?></h2>
                         <div class="video-container">
                             <video src="<?php echo esc_url($video_files[0]); ?>" 
                                    class="active-video"
@@ -133,6 +139,29 @@ class Testimonial_Video_Carousel {
                             </a>
                             <?php endforeach; ?>
                         </span>
+                    </div>
+                    
+                    <!-- Desktop Grid (600px and above) -->
+                    <div class="desktop-grid">
+                        <h2 class="mb-5" style="text-align: center;"><?php echo esc_html($video_testimonials_title); ?></h2>
+                        <div class="video-grid">
+                            <?php foreach ($video_files as $index => $video_url): ?>
+                                <div class="grid-video-container <?php echo esc_attr($atts['orientation']); ?>">
+                                    <video src="<?php echo esc_url($video_url); ?>"
+                                           controls
+                                           controlsList="nodownload"
+                                           playsinline
+                                           preload="metadata">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <div class="video-play-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="white">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>

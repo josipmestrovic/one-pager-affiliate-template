@@ -1,0 +1,240 @@
+/* Video Carousel Styles */
+.video-carousel-container {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background: #f9fafa;
+}
+
+.video-carousel-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 2em 0;
+}
+
+.video-carousel {
+  padding: .3em .3em 0;
+  text-align: center;
+}
+
+html {
+    background-color: #fff !important; /* Default background color for the page */
+}
+
+/* Main video container */
+.video-carousel div.video-container {
+  position: relative;
+  margin-bottom: .3em;
+}
+
+/* Horizontal video container (16:9) */
+.video-carousel.horizontal div.video-container {
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  width: 100%;
+}
+
+/* Vertical video container (9:16) */
+.video-carousel.vertical div.video-container {
+  padding-top: 47.78%; /* 9:16 aspect ratio (16:9 inverted) */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+/* Base video element styling */
+.video-carousel video {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  width: auto;
+  background: transparent;
+  object-fit: contain; /* Ensure ratio is preserved */
+  border-radius: 20px; /* Adding border radius to videos */
+}
+
+/* Desktop vertical video sizing */
+.video-carousel.vertical video {
+  max-width: 500px; /* Small size for desktop */
+}
+
+/* Play button overlay */
+.video-carousel .video-play-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.video-carousel .video-play-button svg {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
+  background-color: var(--primary-button-bg, #0d6efd); /* Use primary button background color */
+  border-radius: 50%; /* Make it circular */
+  padding: 12px; /* Add some padding to fit the arrow nicely */
+}
+
+.video-carousel .video-play-button svg path {
+  fill: #ffffff; /* Keep the arrow white for better visibility */
+}
+
+.video-carousel .video-play-button.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hide default video controls when not playing */
+.video-carousel video:not(.playing) {
+  cursor: pointer;
+}
+
+.video-carousel video:not(.playing)::-webkit-media-controls {
+  display: none !important;
+}
+
+.video-carousel video:not(.playing)::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+/* Tablet breakpoints */
+@media screen and (max-width: 1200px) {
+  .video-carousel.vertical video {
+    max-width: 200px; /* Medium size for larger tablets */
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .video-carousel-inner {
+    padding: 1em;
+  }
+  
+  .video-carousel.vertical video {
+    max-width: 250px; /* Larger size for smaller tablets */
+  }
+}
+
+/* Mobile breakpoint - maintain existing perfect setup */
+@media screen and (max-width: 600px) {
+  .video-carousel.vertical div.video-container {
+    width: 90%;
+    padding-top: 177.78%; /* Maintain 9:16 ratio */
+  }
+  
+  .video-carousel.vertical video {
+    max-width: none; /* Remove desktop/tablet constraints */
+    min-width: 100%; /* Use full container width */
+  }
+  
+  .video-carousel a {
+    max-width: 90px;
+    width: 22%;
+  }
+
+  .video-carousel .video-play-button svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Thumbnail navigation container */
+.video-carousel span {
+  display: inline-block;
+  word-spacing: 1em;  /* Space between thumbnails */
+  
+  /* Enable scrolling of thumbnails when needed */
+  overflow: auto;
+  white-space: nowrap;
+  word-wrap: normal;
+  /* Add padding to improve thumb visibility on mobile */
+  padding: 0.5em 0;
+  margin-top: 0.5em;
+}
+
+/* Thumbnail links */
+.video-carousel a {
+  position: relative;
+  display: inline-block;
+  max-width: 120px;  /* Maximum thumbnail width */
+  width: 25%;  /* Thumbnail width as percentage */
+  border: 2px solid #d1d1d1;  /* Default border - light gray */
+  opacity: .7;  
+  text-decoration: none;
+  border-radius: 12px; /* Adding border radius to thumbnails */
+  overflow: hidden; /* Ensure content stays within the rounded corners */
+}
+
+/* Active thumbnail styles - only active gets the primary color */
+.video-carousel a.active {
+  border-color: var(--primary-button-bg, #0d6efd);  /* Use primary button color with fallback */
+  opacity: 1;
+}
+
+/* Hover effect */
+.video-carousel a:hover { 
+  opacity: 1;
+}
+
+/* Focus style without active state */
+.video-carousel a:not(:active):focus {
+  pointer-events: none;
+}
+
+/* Overlay before element */
+.video-carousel a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,1,.1);
+  transition: background 0s 9999999s;
+}
+
+/* Active thumbnail styling */
+.video-carousel a.active::before {
+  background: rgba(255,255,254,.7);
+}
+
+/* Active state handling */
+.video-carousel span:active a::before {
+  background: rgba(0,0,0,0);
+  transition: background 0s;
+}
+
+/* Active click state */
+.video-carousel span:active a:active::before {
+  background: rgba(255,255,255,.7);
+  transition: background 0s;
+}
+
+/* Thumbnail images */
+.video-carousel img {
+  max-width: 100%;
+  vertical-align: middle;  /* Remove bottom spacing below image */
+}
+
+/* Optional title styling */
+.testimonial-carousel-title {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* Wrapper customization */
+.testimonial-video-carousel-wrapper {
+  margin: 20px auto;
+  max-width: 100%;
+}

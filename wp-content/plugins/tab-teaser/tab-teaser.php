@@ -29,6 +29,17 @@ function tab_teaser_sanitize_checkbox( $value ) {
  */
 function tab_teaser_register_settings() {
 
+    // 2.0 Active Title
+    register_setting(
+        'tab_teaser_settings_group',
+        'tab_teaser_active_title',
+        [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default'           => '',
+        ]
+    );
+
     // 2.1 Inactive Title
     register_setting(
         'tab_teaser_settings_group',
@@ -73,12 +84,32 @@ function tab_teaser_register_settings() {
         ]
     );
 
+    // 2.5 Normal Favicon
+    register_setting(
+        'tab_teaser_settings_group',
+        'tab_teaser_normal_favicon',
+        [
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default'           => '',
+        ]
+    );
+
     // Add a single settings section
     add_settings_section(
         'tab_teaser_settings_section',
         __( 'Tab Teaser Settings', 'tab-teaser' ),
         'tab_teaser_settings_section_desc',
         'tab_teaser_settings'
+    );
+
+    // Field: Active Title
+    add_settings_field(
+        'tab_teaser_active_title_field',
+        __( 'Active Tab Title:', 'tab-teaser' ),
+        'tab_teaser_active_title_field_cb',
+        'tab_teaser_settings',
+        'tab_teaser_settings_section'
     );
 
     // Field: Inactive Title
@@ -116,6 +147,15 @@ function tab_teaser_register_settings() {
         'tab_teaser_settings',
         'tab_teaser_settings_section'
     );
+
+    // Field: Normal Favicon
+    add_settings_field(
+        'tab_teaser_normal_favicon_field',
+        __( 'Normal Favicon:', 'tab-teaser' ),
+        'tab_teaser_normal_favicon_field_cb',
+        'tab_teaser_settings',
+        'tab_teaser_settings_section'
+    );
 }
 add_action( 'admin_init', 'tab_teaser_register_settings' );
 
@@ -129,6 +169,21 @@ function tab_teaser_settings_section_desc() {
 /**
  * 4. FIELD CALLBACKS
  */
+
+// 4.0: Active Title
+function tab_teaser_active_title_field_cb() {
+    $option_value = get_option( 'tab_teaser_active_title', '' );
+    ?>
+    <input 
+        type="text" 
+        id="tab_teaser_active_title"
+        name="tab_teaser_active_title" 
+        value="<?php echo esc_attr( $option_value ); ?>" 
+        size="40"
+        placeholder="<?php esc_attr_e( 'e.g. Welcome back!', 'tab-teaser' ); ?>"
+    />
+    <?php
+}
 
 // 4.1: Inactive Title
 function tab_teaser_inactive_title_field_cb() {
@@ -231,6 +286,47 @@ function tab_teaser_inactive_favicon_field_cb() {
     </script>';
 }
 
+// 4.5: Normal Favicon
+function tab_teaser_normal_favicon_field_cb() {
+    $favicon_value = get_option( 'tab_teaser_normal_favicon', '' );
+    ?>
+    <div style="display: flex; align-items: center;">
+        <input type="text" id="tab_teaser_normal_favicon" name="tab_teaser_normal_favicon" value="<?php echo esc_attr( $favicon_value ); ?>" style="width: 300px; margin-right: 10px;" />
+        <button type="button" class="button" id="tab_teaser_normal_favicon_button"><?php esc_html_e( 'Select Favicon', 'tab-teaser' ); ?></button>
+    </div>
+    <div id="normal-favicon-preview" style="margin-top: 10px; width: 32px; height: 32px;">
+        <?php if ( $favicon_value ) : ?>
+            <img src="<?php echo esc_url( $favicon_value ); ?>" alt="<?php esc_attr_e( 'Favicon Preview', 'tab-teaser' ); ?>" style="max-width: 100%; max-height: 100%;">
+        <?php endif; ?>
+    </div>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            var mediaUploader;
+            $('#tab_teaser_normal_favicon_button').click(function(e) {
+                e.preventDefault();
+                if (mediaUploader) {
+                    mediaUploader.open();
+                    return;
+                }
+                mediaUploader = wp.media({
+                    title: '<?php esc_html_e( 'Select Favicon', 'tab-teaser' ); ?>',
+                    button: {
+                        text: '<?php esc_html_e( 'Use this favicon', 'tab-teaser' ); ?>'
+                    },
+                    multiple: false
+                });
+                mediaUploader.on('select', function() {
+                    var attachment = mediaUploader.state().get('selection').first().toJSON();
+                    $('#tab_teaser_normal_favicon').val(attachment.url);
+                    $('#normal-favicon-preview').html('<img src="' + attachment.url + '" alt="<?php esc_attr_e( 'Favicon Preview', 'tab-teaser' ); ?>" style="max-width: 100%; max-height: 100%;">');
+                });
+                mediaUploader.open();
+            });
+        });
+    </script>
+    <?php
+}
+
 /**
  * 5. ADD MENU PAGE
  */
@@ -304,20 +400,24 @@ function tab_teaser_enqueue_script() {
     );
 
     // Get user settings
-    $inactive_title     = get_option( 'tab_teaser_inactive_title', '' );
-    $enable_flashing    = get_option( 'tab_teaser_enable_flashing', '0' );
-    $flashing_interval  = get_option( 'tab_teaser_flashing_interval', 2 );
-    $inactive_favicon   = get_option( 'tab_teaser_inactive_favicon', '' );
+    $active_title      = get_option( 'tab_teaser_active_title', '' );
+    $inactive_title    = get_option( 'tab_teaser_inactive_title', '' );
+    $enable_flashing   = get_option( 'tab_teaser_enable_flashing', '0' );
+    $flashing_interval = get_option( 'tab_teaser_flashing_interval', 2 );
+    $inactive_favicon  = get_option( 'tab_teaser_inactive_favicon', '' );
+    $normal_favicon    = get_option( 'tab_teaser_normal_favicon', '' );
 
     // Localize the script
     wp_localize_script(
         'tab-teaser-script',
         'tabTeaserData',
         [
+            'activeTitle'      => $active_title,
             'inactiveTitle'    => $inactive_title,
             'enableFlashing'   => $enable_flashing,
             'flashingInterval' => $flashing_interval,
             'inactiveFavicon'  => $inactive_favicon,
+            'normalFavicon'    => $normal_favicon,
             'pluginUrl'        => plugin_dir_url( __FILE__ )
         ]
     );
@@ -325,3 +425,25 @@ function tab_teaser_enqueue_script() {
     wp_enqueue_script( 'tab-teaser-script' );
 }
 add_action( 'wp_enqueue_scripts', 'tab_teaser_enqueue_script' );
+
+/**
+ * 8. ENQUEUE ADMIN SCRIPTS
+ */
+function tab_teaser_enqueue_admin_scripts($hook) {
+    if ('toplevel_page_tab_teaser' !== $hook) {
+        return;
+    }
+    
+    // Enqueue the WordPress media uploader scripts
+    wp_enqueue_media();
+    
+    // Enqueue custom admin script for the media uploader
+    wp_enqueue_script(
+        'tab-teaser-admin-script',
+        plugin_dir_url(__FILE__) . 'js/tab-teaser-admin.js',
+        ['jquery'],
+        '2.0',
+        true
+    );
+}
+add_action('admin_enqueue_scripts', 'tab_teaser_enqueue_admin_scripts');

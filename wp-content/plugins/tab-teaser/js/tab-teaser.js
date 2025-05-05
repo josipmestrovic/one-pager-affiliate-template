@@ -2,7 +2,8 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // 1. Grab user settings from the localized object
-        const originalTitle    = document.title;
+        const defaultTitle     = document.title;
+        const activeTitle      = tabTeaserData.activeTitle || defaultTitle;
         const inactiveTitle    = tabTeaserData.inactiveTitle || "Return to shopping!";
         const enableFlashing   = (tabTeaserData.enableFlashing === '1');
         const flashingInterval = parseInt(tabTeaserData.flashingInterval, 10) || 2;
@@ -12,8 +13,20 @@
         document.head.appendChild(originalFavicon);
 
         const inactiveFavicon = tabTeaserData.inactiveFavicon;
+        const normalFavicon = tabTeaserData.normalFavicon;
         const pluginUrl = tabTeaserData.pluginUrl;
         let originalFaviconHref = originalFavicon.href;
+
+        // Set custom normal favicon if specified in settings
+        if (normalFavicon) {
+            originalFaviconHref = normalFavicon; // Direct URL from media library
+            setNormalFavicon();
+        }
+
+        // Set custom active title if specified in settings
+        if (activeTitle && !document.hidden) {
+            document.title = activeTitle;
+        }
 
         let intervalId = null;
         let toggle     = false;
@@ -23,7 +36,7 @@
         function startFlashingTitle() {
             if (!intervalId) {
                 intervalId = setInterval(() => {
-                    document.title = toggle ? inactiveTitle : originalTitle;
+                    document.title = toggle ? inactiveTitle : activeTitle;
                     toggle = !toggle;
                 }, flashingInterval * 1000);
             }
@@ -53,6 +66,22 @@
             document.title = inactiveTitle;
         }
 
+        function setNormalFavicon() {
+            if (normalFavicon) {
+                console.log('Setting normal favicon:', normalFavicon);
+                const newFavicon = document.createElement('link');
+                newFavicon.rel = 'icon';
+                newFavicon.href = `${normalFavicon}?t=${new Date().getTime()}`; // Direct URL with cache busting
+
+                // Remove all existing favicons to ensure the browser updates it
+                const existingFavicons = document.querySelectorAll("link[rel='icon']");
+                existingFavicons.forEach(favicon => favicon.parentNode.removeChild(favicon));
+
+                // Add the new favicon
+                document.head.appendChild(newFavicon);
+            }
+        }
+
         function setInactiveFavicon() {
             if (inactiveFavicon) {
                 console.log('Setting inactive favicon:', pluginUrl + 'inactive-favicons/' + inactiveFavicon);
@@ -75,7 +104,7 @@
                 clearInterval(intervalId);
                 intervalId = null;
             }
-            document.title = originalTitle;
+            document.title = activeTitle;
             toggle = false;
         }
 
@@ -84,7 +113,7 @@
                 clearInterval(faviconIntervalId);
                 faviconIntervalId = null;
 
-                // Restore the original favicon
+                // Restore the normal/original favicon
                 const newFavicon = document.createElement('link');
                 newFavicon.rel = 'icon';
                 newFavicon.href = originalFaviconHref;
@@ -114,7 +143,7 @@
 
         // 5. Ensure original title if tab is initially visible
         if (!document.hidden) {
-            document.title = originalTitle;
+            document.title = activeTitle;
         }
 
         // 6. Handle visibility changes
