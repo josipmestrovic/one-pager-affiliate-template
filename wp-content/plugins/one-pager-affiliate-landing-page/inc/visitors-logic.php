@@ -8,26 +8,61 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
+// Get visitor count settings from options, or use defaults if not set
+function opalp_get_visitor_settings() {
+    // Check if we have saved visitor count settings
+    $visitor_settings = get_option('opalp_visitor_count', []);
+    
+    // If settings don't exist, use defaults from settings page
+    if (empty($visitor_settings) && function_exists('opalp_get_visitor_count_defaults')) {
+        $visitor_settings = opalp_get_visitor_count_defaults();
+    } else if (empty($visitor_settings)) {
+        // Fallback defaults in case function doesn't exist
+        $visitor_settings = [
+            'min_count' => 60,
+            'max_count' => 200,
+            'update_interval' => 5,
+            'change_probability' => [
+                'small' => 50,
+                'large' => 50,
+            ]
+        ];
+    }
+    
+    return $visitor_settings;
+}
+
+// Initialize the visitor count with settings-defined range
 if (!isset($_SESSION['visitor_count'])) {
-    $_SESSION['visitor_count'] = rand(60, 200); // Initial random number between 60 and 200
+    $settings = opalp_get_visitor_settings();
+    $_SESSION['visitor_count'] = rand($settings['min_count'], $settings['max_count']);
 }
 
 function update_visitor_count() {
+    $settings = opalp_get_visitor_settings();
+
     if (!isset($_SESSION['visitor_count'])) {
-        $_SESSION['visitor_count'] = rand(60, 200);
+        $_SESSION['visitor_count'] = rand($settings['min_count'], $settings['max_count']);
     }
 
     $current_count = $_SESSION['visitor_count'];
 
-    // Determine the change (-2, -1, 0, +1, or +2 with varying probabilities)
-    $change = rand(0, 9) < 5 ? rand(-1, 1) : (rand(0, 1) ? 2 : -2); // Higher chance for -1, 0, +1, lower for -2, +2
+    // Determine the change based on probability settings
+    $random = rand(1, 100);
+    if ($random <= $settings['change_probability']['small']) {
+        // Small change (-1, 0, +1)
+        $change = rand(-1, 1);
+    } else {
+        // Large change (-2, +2)
+        $change = rand(0, 1) ? 2 : -2;
+    }
 
-    // Update the count, ensuring it stays between 60 and 200
+    // Update the count, ensuring it stays within min/max range
     $new_count = $current_count + $change;
-    if ($new_count < 60) {
-        $new_count = 60;
-    } elseif ($new_count > 200) {
-        $new_count = 200;
+    if ($new_count < $settings['min_count']) {
+        $new_count = $settings['min_count'];
+    } elseif ($new_count > $settings['max_count']) {
+        $new_count = $settings['max_count'];
     }
 
     $_SESSION['visitor_count'] = $new_count;
@@ -50,6 +85,10 @@ add_action('wp_footer', function () {
     $output_script = $show_visitor_count_top || is_page_template('one-pager-template.php'); // Assume main count always shown on template
 
     if ($output_script) {
+        // Get the update interval from settings
+        $settings = opalp_get_visitor_settings();
+        $update_interval = $settings['update_interval'] * 1000; // Convert to milliseconds
+        
         echo '<script>
             setInterval(function () {
                 fetch("' . admin_url('admin-ajax.php?action=update_visitor_count') . '")
@@ -65,7 +104,7 @@ add_action('wp_footer', function () {
                             topVisitorElement.textContent = data.count + " People Viewing";
                         }
                     });
-            }, 5000); // Update every 5 seconds
+            }, ' . $update_interval . '); // Update interval from settings
         </script>';
     }
 });

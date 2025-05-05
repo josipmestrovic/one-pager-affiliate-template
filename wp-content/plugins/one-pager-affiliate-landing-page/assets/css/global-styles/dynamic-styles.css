@@ -9,6 +9,13 @@
     --discount-text-color: #dc3545; /* Bootstrap danger red */
 }
 
+
+    
+
+.container {
+    background-color: transparent ;/* Default to transparent */;
+}
+
 /* Apply default dynamic colors */
 /* Example: Apply to elements that will use these colors */
 
@@ -18,6 +25,8 @@
 .site-footer { 
     background-color: var(--header-footer-bg);
 }
+
+
 
 /* Top Header Bar uses dynamic header-footer-bg */
 .top-header-bar {
@@ -409,4 +418,11 @@ li {
     width: 100% !important;
     height: auto !important;
     object-fit: contain !important;
+}
+
+/* Remove right margin from list-inline-item on very small screens to prevent wrapping issues */
+@media (max-width: 416px) {
+    .list-inline-item:not(:last-child) {
+        margin-right: 0 !important;
+    }
 }

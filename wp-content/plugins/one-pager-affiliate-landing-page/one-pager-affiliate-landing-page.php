@@ -3,11 +3,12 @@
  * Plugin Name: One-Pager Affiliate Landing Page
  * Plugin URI: https://e-com.hr
  * Description: A simple one-page affiliate landing page plugin.
- * Version: 9.3.0
+ * Version: 0.9.5
  * Author: E-COM
  * Author URI: https://e-com.hr
  *
  * Changelog:
+ * - 0.9.5: All custom fields added to front end and back end, visual styles improvement, mobile responsiveness improvements, added settings for visitor count.
  * - 9.3.0: Commented countdown logic PHP file.
  * - 0.9.2: Added FAQs accordion, connected fields in CMS, reviews moved to a dedicated Reviews tab.
  */
@@ -35,6 +36,10 @@ function opalp_activate() {
     // Set default color settings if they don't exist
     if (false === get_option('opalp_global_colors')) {
         add_option('opalp_global_colors', opalp_get_color_defaults());
+    }
+    // Set default visitor count settings if they don't exist
+    if (false === get_option('opalp_visitor_count')) {
+        add_option('opalp_visitor_count', opalp_get_visitor_count_defaults());
     }
 }
 register_activation_hook( __FILE__, 'opalp_activate' );

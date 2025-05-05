@@ -15,11 +15,9 @@ $get_primary_btn_color = get_field('primary_button_color');
 <?php if ($get_primary_btn_color): ?>
 :root { 
     --primary-button-bg: <?php echo esc_attr($get_primary_btn_color); ?>; 
-    --sticky-footer-bg: #ffffff; /* Adding the missing sticky footer background color */
 }
 <?php else: ?>
 :root {
-    --sticky-footer-bg: #ffffff; /* Default value if primary button color is not set */
 }
 <?php endif; ?>
 /* Fix horizontal scrolling issue caused by nested full-width sections */
@@ -327,6 +325,36 @@ section[style*="background-color: var(--featured-bg)"] {
     transform: none !important;
   }
 }
+
+/* Fix for whitespace below footer */
+
+/* Make popovers appear above the sticky element */
+.popover {
+    z-index: 10000 !important; /* Higher than sticky element's z-index (9999) */
+}
+
+/* Remove active state styling from accordion buttons */
+.accordion-button:not(.collapsed) {
+    color: inherit !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Ensure the arrow icon still rotates */
+.accordion-button:not(.collapsed)::after {
+    transform: rotate(-180deg);
+}
+
+/* Remove all borders except bottom border from FAQ items */
+.accordion-item {
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+/* Remove border from the last accordion item */
+.accordion-item:last-of-type {
+    border-bottom: none;
+}
 </style>
 <?php
 
@@ -502,11 +530,16 @@ $video_description = get_field('video_description');
             $discount_price = get_field('discount_price');
             $discount_percentage = ($price && $discount_price && $price > 0) ? round((($price - $discount_price) / $price) * 100) : null;
             $bonus_offer_text = get_field('bonus_offer_text');
+            $show_from = get_field('can_from_apply_to_price');
+            $cost_per_day = get_field('cost_per_day');
         ?>
         <div class="product-pricing my-4" style="margin-bottom:-18px !important;">
             <?php if ($discount_price && $discount_percentage !== null): ?>
                 <div class="d-flex align-items-center">
-                    <div class="old-price me-3" style="text-decoration: line-through; font-size: 1.5em !important; font-weight: 700;">
+                    <?php if ($show_from): ?>
+                        <div class="from-text me-2" style="font-size: 26px; font-weight: 600;">From</div>
+                    <?php endif; ?>
+                    <div class="old-price me-3" style="text-decoration: line-through; font-size: 1.5em !important; font-weight: 600;     color: #575858;">
                         $<?php echo esc_html(number_format($price, 2)); ?>
                     </div>
                     <div class="price-arrow-wrapper text-center me-3" style="margin-bottom:30px;">
@@ -515,20 +548,39 @@ $video_description = get_field('video_description');
                             <path d="M29.0607 13.0607C29.6464 12.4749 29.6464 11.5251 29.0607 10.9393L19.5147 1.3934C18.9289 0.807611 17.9792 0.807611 17.3934 1.3934C16.8076 1.97919 16.8076 2.92893 17.3934 3.51472L25.8787 12L17.3934 20.4853C16.8076 21.0711 16.8076 22.0208 17.3934 22.6066C17.9792 23.1924 18.9289 23.1924 19.5147 22.6066L29.0607 13.0607ZM0 12V13.5H28V12V10.5H0V12Z" fill="black"/>
                         </svg>
                     </div>
-                    <div class="new-price me-3" style="font-size: 1.5em; font-weight: bold;">
-                        $<?php echo esc_html(number_format($discount_price, 2)); ?>
+                    <div class="new-price-wrapper position-relative me-3">
+                        <?php if (!empty($cost_per_day)): ?>
+                            <div class="cost-per-day" style="position: absolute; top: -35px; left: 75%; transform: translateX(-50%); white-space: nowrap; font-size: 16px; color: #575858; background-color: var(--featured-bg); padding: 4px 12px; border-radius: 12px; font-weight: 600;">
+                                <?php echo esc_html($cost_per_day); ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="new-price" style="font-size: 1.5em; font-weight: bold;">
+                            $<?php echo esc_html(number_format($discount_price, 2)); ?>
+                        </div>
                     </div>
                     <?php if ($bonus_offer_text): ?>
-                        <span class="bonus-offer"  style="color: #575858 !important;">+ <?php echo esc_html($bonus_offer_text); ?></span>
+                        <span class="bonus-offer" style="color: #575858 !important;">+ <?php echo esc_html($bonus_offer_text); ?></span>
                     <?php endif; ?>
                 </div>
             <?php else: ?>
-                <div class="d-inline-block" style="font-size: 1.5em; font-weight: bold;">
-                    $<?php echo esc_html(number_format($price, 2)); ?>
+                <div class="d-flex align-items-center">
+                    <?php if ($show_from): ?>
+                        <div class="from-text me-2" style="font-size: 26px; font-weight: 600;">From</div>
+                    <?php endif; ?>
+                    <div class="regular-price-wrapper position-relative">
+                        <?php if (!empty($cost_per_day)): ?>
+                            <div class="cost-per-day" style="position: absolute; top: -24px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 16px; color: #575858; background-color: var(--featured-bg); padding: 4px 12px; border-radius: 12px;">
+                                <?php echo esc_html($cost_per_day); ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="regular-price" style="font-size: 1.5em; font-weight: bold;">
+                            $<?php echo esc_html(number_format($price, 2)); ?>
+                        </div>
+                    </div>
+                    <?php if ($bonus_offer_text): ?>
+                        <span class="bonus-offer ms-2">+ <?php echo esc_html($bonus_offer_text); ?></span>
+                    <?php endif; ?>
                 </div>
-                <?php if ($bonus_offer_text): ?>
-                    <span class="bonus-offer ms-2">+ <?php echo esc_html($bonus_offer_text); ?></span>
-                <?php endif; ?>
             <?php endif; ?>
         </div>
         <div class="mt-3">
@@ -884,7 +936,11 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
 <section style="width:100%; position:relative; padding:40px 0; background-color: var(--featured-bg);">
     <div class="container" style="background-color: var(--featured-bg);"><!-- Inner container for content alignment -->
         <div class="text-center mb-4">
-            <h2 class="mb-3">Reviews</h2>
+            <?php
+            $reviews_title = get_field('reviews_section_title');
+            if (empty($reviews_title)) $reviews_title = 'Reviews';
+            ?>
+            <h2 class="mb-3"><?php echo esc_html($reviews_title); ?></h2>
             <?php
             $product_rating = get_field('product_rating');
             $number_of_reviews = get_field('number_of_reviews');
@@ -917,45 +973,160 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
             </div>
         </div>
 
-          
-        <div class="testimonials row justify-content-between text-center" style="max-width: 1200px; margin: 0 auto 40px;">
-            <?php for ($i = 1; $i <= 3; $i++): ?>
+        <div class="container">
+            <div class="testimonials row justify-content-center">
                 <?php 
+                // Get all testimonials and store valid ones in array
+                $valid_testimonials = [];
+                for ($i = 1; $i <= 24; $i++) {
                     $text = get_field("testimonial_{$i}_text");
-                    $author = get_field("testimonial_{$i}_author");
-                    $image = get_field("testimonial_{$i}_image");
+                    if ($text) {
+                        $valid_testimonials[] = [
+                            'text' => $text,
+                            'author' => get_field("testimonial_{$i}_author"),
+                            'image' => get_field("testimonial_{$i}_image")
+                        ];
+                    }
+                }
+                
+                // Display testimonials if there are any
+                if (!empty($valid_testimonials)):
+                    $total_testimonials = count($valid_testimonials);
+                    foreach ($valid_testimonials as $index => $testimonial): 
+                        // Add classes to hide testimonials beyond the initial display count
+                        $mobile_hidden_class = $index >= 3 ? 'mobile-hidden' : '';
+                        $desktop_hidden_class = $index >= 6 ? 'desktop-hidden' : '';
                 ?>
-                <?php if ($text): ?>
-                    <div class="col-md-3 col-sm-6 mb-4">
-                        <div class="testimonial">
-                            <?php if ($image): ?>
-                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($author); ?>" class="rounded-circle mb-3" style="width: 80px; height: 80px;">
+                    <div class="col-12 col-md-4 mb-4 testimonial-item <?php echo $mobile_hidden_class; ?> <?php echo $desktop_hidden_class; ?>">
+                        <div class="testimonial h-100">
+                            <?php if ($testimonial['image']): ?>
+                                <img src="<?php echo esc_url($testimonial['image']); ?>" alt="<?php echo esc_attr($testimonial['author']); ?>" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
                             <?php endif; ?>
                             <div class="stars mb-2">
-                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                    </svg>
-                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                    </svg>
-                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                    </svg>
-                                    <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                        <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                    </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
+                                </svg>
                             </div>  
                             <blockquote class="blockquote">
-                                <p class="mb-0">"<?php echo esc_html($text); ?>"</p>
-                                <?php if ($author): ?>
-                                    <footer class="blockquote-footer mt-2">- <?php echo esc_html($author); ?></footer>
+                                <p class="mb-0">"<?php echo esc_html($testimonial['text']); ?>"</p>
+                                <?php if ($testimonial['author']): ?>
+                                    <footer class="blockquote-footer mt-2">- <?php echo esc_html($testimonial['author']); ?></footer>
                                 <?php endif; ?>
                             </blockquote>
                         </div>
                     </div>
-                <?php endif; ?>
-            <?php endfor; ?>
+                <?php 
+                    endforeach;
+                    
+                    // Only show the Load More button if there are more testimonials than the initial display count
+                    if ($total_testimonials > 3): 
+                ?>
+                    <div class="col-12 text-center mt-3">
+                        <button id="load-more-reviews" class="btn load-more-reviews">Load More Reviews</button>
+                    </div>
+                <?php 
+                    endif;
+                endif; 
+                ?>
+            </div>
         </div>
+
+        <style>
+            /* Custom style for Load More Reviews button */
+            .load-more-reviews {
+                background-color: #272929;
+                color: white;
+                font-size: 18px;
+                letter-spacing: 10%;
+                border-radius: 40px !important;
+                padding: 6px 40px;
+                border: none;
+                transition: opacity 0.2s ease;
+            }
+            
+            .load-more-reviews:hover, 
+            .load-more-reviews:focus {
+                opacity: 0.85;
+                background-color: #272929;
+                color: white;
+                border: none;
+                box-shadow: none;
+            }
+            
+            /* Responsive testimonial layout - 3 per row above 700px, 1 per row at or below 700px */
+            @media (max-width: 700px) {
+                .testimonials .col-md-4 {
+                    width: 100% !important;
+                }
+                /* Hide testimonials beyond the first 3 on mobile */
+                .testimonials .testimonial-item.mobile-hidden {
+                    display: none;
+                }
+            }
+            @media (min-width: 701px) {
+                .testimonials .col-md-4 {
+                    width: 33.333% !important;
+                }
+                /* Hide testimonials beyond the first 6 on desktop */
+                .testimonials .testimonial-item.desktop-hidden {
+                    display: none;
+                }
+            }
+        </style>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadMoreBtn = document.getElementById('load-more-reviews');
+            if (!loadMoreBtn) return;
+            
+            loadMoreBtn.addEventListener('click', function() {
+                // Check if we're on mobile or desktop view
+                const isMobile = window.innerWidth <= 700;
+                
+                if (isMobile) {
+                    // Show all mobile hidden testimonials
+                    document.querySelectorAll('.testimonial-item.mobile-hidden').forEach(item => {
+                        item.classList.remove('mobile-hidden');
+                    });
+                } else {
+                    // Show all desktop hidden testimonials
+                    document.querySelectorAll('.testimonial-item.desktop-hidden').forEach(item => {
+                        item.classList.remove('desktop-hidden');
+                    });
+                }
+                
+                // Hide the button after showing all testimonials
+                loadMoreBtn.style.display = 'none';
+            });
+            
+            // Handle window resize to adjust which testimonials are visible
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 700;
+                const allShown = isMobile ? 
+                    document.querySelectorAll('.testimonial-item.mobile-hidden').length === 0 : 
+                    document.querySelectorAll('.testimonial-item.desktop-hidden').length === 0;
+                
+                // Only show the button if there are hidden testimonials
+                if (allShown) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    loadMoreBtn.style.display = 'inline-block';
+                }
+            });
+        });
+        </script>
     </div>
 </section>
 
@@ -980,6 +1151,31 @@ if (!empty($faqs)):
 ?>
 <div class="faq-section my-5">
     <h2 class="text-start mb-4"><?php echo esc_html($faq_section_title); ?></h2>
+    
+    <style>
+    /* Remove active state styling from accordion buttons */
+    .accordion-button:not(.collapsed) {
+        color: inherit !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+    
+    /* Ensure the arrow icon still rotates */
+    .accordion-button:not(.collapsed)::after {
+        transform: rotate(-180deg);
+    }
+    
+    /* Remove all borders except bottom border from FAQ items */
+    .accordion-item {
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+    
+    /* Remove border from the last accordion item */
+    .accordion-item:last-of-type {
+        border-bottom: none;
+    }
+    </style>
     
     <!-- Wrap both columns in one accordion container to coordinate toggling -->
     <div class="accordion" id="faqAccordion">
@@ -1187,30 +1383,49 @@ $button_1_url = get_field('button_1_url');
 // Only show the sticky element if we have text for it
 if ($sticky_cta_text && $sticky_button_text):
 ?>
-<div id="sticky-cta-element" class="sticky-cta-element" style="position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 1140px; z-index: 9999; padding: 0 15px; display: none;">
-    <div class="sticky-cta-inner" style="background-color: var(--sticky-footer-bg); border-radius: 60px; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-        <div class="sticky-cta-left">
-            <div class="sticky-cta-text" style="font-weight: 600; font-size: 1.1rem;">
-                <?php echo esc_html($sticky_cta_text); ?>
+<div id="sticky-cta-element" class="sticky-cta-element" style="position: fixed; bottom: 18px; left: 0; right: 0; width: 100%; z-index: 9999; display: none;">
+    <div class="container" style="padding-bottom:0;">
+        <div class="sticky-cta-inner" style="background-color: var(--sticky-footer-bg); border-radius: 60px; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+            <div class="sticky-cta-left">
+                <div class="sticky-cta-text" style="font-weight: 600; font-size: 1.1rem;">
+                    <?php echo esc_html($sticky_cta_text); ?>
+                </div>
+                <div class="sticky-payment-info d-flex align-items-center mt-2">
+                    <?php if (!empty($payment_images) && is_array($payment_images)): ?>
+                        <?php
+                            $plugin_root_url = plugin_dir_url(__DIR__ . '/../one-pager-affiliate-landing-page.php');
+                            // Show only up to 3 payment images to save space
+                            $max_display = 2;
+                            $count = count($payment_images);
+                            $display_images = array_slice($payment_images, 0, $max_display);
+                            $remaining_images = array_slice($payment_images, $max_display);
+                            foreach ($display_images as $img_file): ?>
+                                <img src="<?php echo esc_url($plugin_root_url . 'assets/payments-images/' . $img_file); ?>" class="img-fluid payment-logo me-2" style="max-height: 16px;">
+                            <?php endforeach;
+                            if ($count > $max_display):
+                                $remaining = $count - $max_display;
+                                $popover_content = '';
+                                foreach ($remaining_images as $file) {
+                                    $popover_content .= '<img src=\'' . esc_url($plugin_root_url . 'assets/payments-images/' . $file) . '\' class=\'payment-logo me-2\' />';
+                                }
+                            ?>
+                            <button type="button" class="btn btn-sm btn-outline-secondary payment-more" data-bs-toggle="popover" data-bs-trigger="hover focus click" data-bs-html="true" data-bs-sanitize="false" data-bs-content="<?php echo esc_attr($popover_content); ?>" data-bs-placement="top" style="max-height: 20px; display: flex; align-items: center;">
+                                <?php echo '+' . esc_html($remaining); ?>
+                            </button>
+                            <?php endif; ?>
+                        <span class="secure-payments-text" style="font-size: 0.8rem; font-weight: 600;">| Secured Payments</span>
+                        
+                        <?php if ($money_back_days): ?>
+                            <span class="money-back-text ms-2" style="font-size: 0.8rem; font-weight: 700;">| <?php echo esc_html($money_back_days); ?> Days Money Back</span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-            <div class="sticky-payment-info d-flex align-items-center mt-2">
-                <?php if (!empty($payment_images) && is_array($payment_images)): ?>
-                    <?php
-                        $plugin_root_url = plugin_dir_url(__DIR__ . '/../one-pager-affiliate-landing-page.php');
-                        // Show only up to 3 payment images to save space
-                        $max_display = 3;
-                        $display_images = array_slice($payment_images, 0, $max_display);
-                        foreach ($display_images as $img_file): ?>
-                            <img src="<?php echo esc_url($plugin_root_url . 'assets/payments-images/' . $img_file); ?>" class="img-fluid payment-logo me-2" style="max-height: 16px;">
-                        <?php endforeach; ?>
-                    <span class="secure-payments-text" style="font-size: 0.8rem; font-weight: 600;">| Secured Payments</span>
-                <?php endif; ?>
+            <div class="sticky-cta-right">
+                <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary opalp-bg-primary-button" style="white-space: nowrap; padding: 10px 20px; font-weight: 600;">
+                    <?php echo esc_html($sticky_button_text); ?>
+                </a>
             </div>
-        </div>
-        <div class="sticky-cta-right">
-            <a href="<?php echo esc_url($button_1_url); ?>" class="btn btn-primary opalp-bg-primary-button" style="white-space: nowrap; padding: 10px 20px; font-weight: 600;">
-                <?php echo esc_html($sticky_button_text); ?>
-            </a>
         </div>
     </div>
 </div>

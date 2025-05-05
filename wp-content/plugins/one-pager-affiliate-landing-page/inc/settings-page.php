@@ -37,6 +37,21 @@ function opalp_get_font_defaults() {
 }
 
 /**
+ * Get default visitor count settings.
+ */
+function opalp_get_visitor_count_defaults() {
+    return [
+        'min_count' => 60,
+        'max_count' => 200,
+        'update_interval' => 5,
+        'change_probability' => [
+            'small' => 50, // Percentage chance for -1, 0, +1 changes (out of 100)
+            'large' => 50, // Percentage chance for -2, +2 changes (out of 100)
+        ]
+    ];
+}
+
+/**
  * Register plugin settings, sections, and fields.
  */
 function opalp_register_settings() {
@@ -130,6 +145,95 @@ function opalp_register_settings() {
             'description' => 'Select the font family for body text and paragraphs.'
         ]
     );
+
+    // Register the setting group for visitor count settings
+    register_setting(
+        'opalp_settings_group',      // Use the same group to save together
+        'opalp_visitor_count',       // Option name for visitor count settings
+        'opalp_sanitize_visitor_count' // Sanitization callback for visitor count settings
+    );
+
+    // Add a section for Visitor Count Settings
+    add_settings_section(
+        'opalp_visitor_count_section',
+        'Visitor Count Settings',
+        'opalp_visitor_count_section_callback',
+        'one-pager-settings'
+    );
+
+    $visitor_count_defaults = opalp_get_visitor_count_defaults();
+
+    // Minimum Count Field
+    add_settings_field(
+        'opalp_min_count',
+        'Minimum Visitor Count',
+        'opalp_render_number_field',
+        'one-pager-settings',
+        'opalp_visitor_count_section',
+        [
+            'label_for' => 'opalp_min_count',
+            'option_name' => 'opalp_visitor_count',
+            'key' => 'min_count',
+            'default' => $visitor_count_defaults['min_count'],
+            'min' => 1,
+            'max' => 999,
+            'description' => 'The minimum number of visitors to display.'
+        ]
+    );
+
+    // Maximum Count Field
+    add_settings_field(
+        'opalp_max_count',
+        'Maximum Visitor Count',
+        'opalp_render_number_field',
+        'one-pager-settings',
+        'opalp_visitor_count_section',
+        [
+            'label_for' => 'opalp_max_count',
+            'option_name' => 'opalp_visitor_count',
+            'key' => 'max_count',
+            'default' => $visitor_count_defaults['max_count'],
+            'min' => 1,
+            'max' => 999,
+            'description' => 'The maximum number of visitors to display.'
+        ]
+    );
+
+    // Update Interval Field
+    add_settings_field(
+        'opalp_update_interval',
+        'Update Interval (seconds)',
+        'opalp_render_number_field',
+        'one-pager-settings',
+        'opalp_visitor_count_section',
+        [
+            'label_for' => 'opalp_update_interval',
+            'option_name' => 'opalp_visitor_count',
+            'key' => 'update_interval',
+            'default' => $visitor_count_defaults['update_interval'],
+            'min' => 1,
+            'max' => 60,
+            'description' => 'How often the visitor count should update (in seconds).'
+        ]
+    );
+
+    // Small Change Probability Field
+    add_settings_field(
+        'opalp_small_change_probability',
+        'Small Change Probability (%)',
+        'opalp_render_number_field',
+        'one-pager-settings',
+        'opalp_visitor_count_section',
+        [
+            'label_for' => 'opalp_small_change_probability',
+            'option_name' => 'opalp_visitor_count',
+            'key' => 'small_change_probability',
+            'default' => $visitor_count_defaults['change_probability']['small'],
+            'min' => 0,
+            'max' => 100,
+            'description' => 'The probability (%) of small changes (-1, 0, +1) occurring.'
+        ]
+    );
 }
 // Note: The add_action('admin_init', 'opalp_register_settings'); is already in the main plugin file.
 
@@ -159,6 +263,13 @@ function opalp_global_colors_section_callback() {
  */
 function opalp_font_settings_section_callback() {
     echo '<p>Choose the fonts for headings and body text. If using Google Fonts, ensure they are properly enqueued.</p>';
+}
+
+/**
+ * Callback for the Visitor Count Settings section description.
+ */
+function opalp_visitor_count_section_callback() {
+    echo '<p>Configure the behavior of the dynamic visitor counter displayed on your landing pages.</p>';
 }
 
 /**
@@ -214,6 +325,40 @@ function opalp_render_font_select_field($args) {
 }
 
 /**
+ * Render a number input field.
+ */
+function opalp_render_number_field($args) {
+    $option_name = $args['option_name'];
+    $key = $args['key'];
+    $default = $args['default'];
+    $min = $args['min'] ?? 0;
+    $max = $args['max'] ?? 999;
+    $description = $args['description'] ?? '';
+
+    $options = get_option($option_name, []);
+    
+    // Handle the special case for small_change_probability
+    if ($key === 'small_change_probability') {
+        $value = isset($options['change_probability']['small']) ? $options['change_probability']['small'] : $default;
+    } else {
+        $value = isset($options[$key]) ? $options[$key] : $default;
+    }
+
+    ?>
+    <input type="number"
+           id="opalp_<?php echo esc_attr($key); ?>"
+           name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]"
+           value="<?php echo esc_attr($value); ?>"
+           min="<?php echo esc_attr($min); ?>"
+           max="<?php echo esc_attr($max); ?>"
+           class="regular-text" />
+    <?php if ($description) : ?>
+        <p class="description"><?php echo esc_html($description); ?></p>
+    <?php endif; ?>
+    <?php
+}
+
+/**
  * Sanitize color settings before saving.
  */
 function opalp_sanitize_colors($input) {
@@ -248,6 +393,55 @@ function opalp_sanitize_fonts($input) {
             $new_input[$key] = $default;
         }
     }
+    return $new_input;
+}
+
+/**
+ * Sanitize visitor count settings before saving.
+ */
+function opalp_sanitize_visitor_count($input) {
+    $new_input = [];
+    $defaults = opalp_get_visitor_count_defaults();
+    
+    // Sanitize min_count
+    if (isset($input['min_count'])) {
+        $min_count = intval($input['min_count']);
+        $new_input['min_count'] = ($min_count >= 1 && $min_count <= 999) ? $min_count : $defaults['min_count'];
+    } else {
+        $new_input['min_count'] = $defaults['min_count'];
+    }
+    
+    // Sanitize max_count
+    if (isset($input['max_count'])) {
+        $max_count = intval($input['max_count']);
+        $new_input['max_count'] = ($max_count >= 1 && $max_count <= 999) ? $max_count : $defaults['max_count'];
+        
+        // Ensure max_count is greater than or equal to min_count
+        if ($new_input['max_count'] < $new_input['min_count']) {
+            $new_input['max_count'] = $new_input['min_count'];
+        }
+    } else {
+        $new_input['max_count'] = $defaults['max_count'];
+    }
+    
+    // Sanitize update_interval
+    if (isset($input['update_interval'])) {
+        $update_interval = intval($input['update_interval']);
+        $new_input['update_interval'] = ($update_interval >= 1 && $update_interval <= 60) ? $update_interval : $defaults['update_interval'];
+    } else {
+        $new_input['update_interval'] = $defaults['update_interval'];
+    }
+    
+    // Sanitize change_probability
+    $new_input['change_probability'] = [
+        'small' => isset($input['small_change_probability']) ? 
+            min(100, max(0, intval($input['small_change_probability']))) : 
+            $defaults['change_probability']['small'],
+    ];
+    
+    // Calculate large probability as the remainder (100 - small probability)
+    $new_input['change_probability']['large'] = 100 - $new_input['change_probability']['small'];
+    
     return $new_input;
 }
 
