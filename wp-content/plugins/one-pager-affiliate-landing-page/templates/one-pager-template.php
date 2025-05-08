@@ -77,8 +77,27 @@ section[style*="background-color: var(--featured-bg)"] {
 }
 /* Decrease As Seen On gap on small screens */
 @media (max-width: 576px) {
-    .as-seen-on-section .d-flex > div {
+    .as-seen-on-section .d-flex > div { /* Corrected class name */
         margin: 0 15px !important;
+    }
+}
+
+@media (max-width: 450px) {
+    .featured-on-section .d-flex > div {
+        margin: 0 15px 15px !important; /* Adjust spacing for the container div */
+    }
+    .featured-on-section .d-flex > div img {
+        max-height: 65px !important; /* Decrease image height */
+    }
+    .approved-featured-container img {
+        max-height: 44px !important; /* Set max-height for approved-featured-container images */
+    }
+}
+
+/* Add responsive gap for top header bar content */
+@media (max-width: 1000px) {
+    .top-header-content {
+        gap: 12px !important;
     }
 }
 
@@ -389,22 +408,25 @@ $display_top_bar = !empty(trim($top_header_text)) || !empty($countdown_date_str)
 
 if ($display_top_bar): 
 ?>
-<div class="top-header-bar" style="background-color: var(--header-footer-bg); color: #FFFFFF; font-size: 20px; padding: 12px 0; width: 100%; text-align: center;">
-    <div class="top-header-content" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 24px;">
-        <?php // Display text only if it's not empty
-        if (!empty(trim($top_header_text))): ?>
-            <span class="top-header-text"><?php echo esc_html($top_header_text); ?></span>
-        <?php endif; ?>
+<div class="top-header-bar" style="background-color: var(--header-footer-bg); color: #FFFFFF; font-size: 20px; width: 100%; text-align: center;">
+    <div class="container" style="    padding: 12px 0 !important;"
+ >
+        <div class="top-header-content" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 24px;">
+            <?php // Display text only if it's not empty
+            if (!empty(trim($top_header_text))): ?>
+                <span class="top-header-text"><?php echo esc_html($top_header_text); ?></span>
+            <?php endif; ?>
 
-        <?php // Display countdown only if date is set
-        if (!empty($countdown_date_str)): ?>
-            <span class="top-header-countdown" id="top-countdown"></span>
-        <?php endif; ?>
+            <?php // Display countdown only if date is set
+            if (!empty($countdown_date_str)): ?>
+                <span class="top-header-countdown" id="top-countdown"></span>
+            <?php endif; ?>
 
-        <?php // Display visitor count only if checkbox is checked
-        if ($show_visitor_count_top): ?>
-            <span class="top-header-visitors" id="top-visitor-count"><?php echo $initial_visitor_count; ?> People Viewing</span>
-        <?php endif; ?>
+            <?php // Display visitor count only if checkbox is checked
+            if ($show_visitor_count_top): ?>
+                <span class="top-header-visitors" id="top-visitor-count"><?php echo $initial_visitor_count; ?> People Viewing</span>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
 <?php endif; 
@@ -419,19 +441,19 @@ $fallback_hero_image = get_field('fallback_hero_image');
 $video_description = get_field('video_description');
 ?>
 
-<div class="container my-5" style="margin-top:0px !important;">
+<div id="hero-container" class="container my-5" style="margin-top:0px !important;">
   <div class="row gx-5 align-items-center">
     <div class="col-md-6 desktop-video-wrapper" style="margin-top: -10px;">
       <?php if ($hero_video_file): ?>
-        <div class="video-wrapper position-relative">
-          <video playsinline muted preload="metadata" class="img-fluid w-100">
+        <?php $hero_video_thumbnail = get_field('hero_video_thumbnail'); ?>
+        <div class="video-wrapper position-relative" style="border-radius: 20px; overflow: hidden;">
+          <video playsinline muted preload="metadata" class="img-fluid w-100" poster="<?php echo esc_url($hero_video_thumbnail); ?>" style="border-radius: 20px;">
             <source src="<?php echo esc_url($hero_video_file); ?>" type="video/mp4">
             Your browser does not support the video tag.
           </video>
           <div class="hero-play-button position-absolute top-50 start-50 translate-middle" style="cursor:pointer; z-index:2;">
-            <svg width="80" height="80" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.5)"/>
-              <polygon points="24,18 24,42 42,30" fill="#fff"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5)); background-color: var(--primary-button-bg, #0d6efd); border-radius: 50%; padding: 12px;">
+              <path d="M8 5v14l11-7z"/>
             </svg>
           </div>
         </div>
@@ -500,14 +522,22 @@ $video_description = get_field('video_description');
         <?php if ($hero_video_file || $hero_video_url || $fallback_hero_image): ?>
             <div class="mobile-video-wrapper mb-4 position-relative">
                 <?php if ($hero_video_file): ?>
-                    <video playsinline muted preload="metadata" class="w-100">
-                        <source src="<?php echo esc_url($hero_video_file); ?>" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <?php $hero_video_thumbnail_mobile = get_field('hero_video_thumbnail'); ?>
+                    <?php if ($hero_video_thumbnail_mobile): ?>
+                        <img src="<?php echo esc_url($hero_video_thumbnail_mobile); ?>" alt="Video Thumbnail" class="img-fluid w-100" style="cursor: pointer; border-radius: 20px;">
+                        <video playsinline muted preload="metadata" class="w-100" style="border-radius: 20px; display: none;">
+                            <source src="<?php echo esc_url($hero_video_file); ?>" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    <?php else: ?>
+                        <video playsinline muted preload="metadata" class="w-100" style="border-radius: 20px;">
+                            <source src="<?php echo esc_url($hero_video_file); ?>" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    <?php endif; ?>
                     <div class="hero-play-button position-absolute top-50 start-50 translate-middle" style="cursor:pointer; z-index:2;">
-                      <svg width="80" height="80" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.5)"/>
-                        <polygon points="24,18 24,42 42,30" fill="#fff"/>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5)); background-color: var(--primary-button-bg, #0d6efd); border-radius: 50%; padding: 12px;">
+                        <path d="M8 5v14l11-7z"/>
                       </svg>
                     </div>
                 <?php elseif ($hero_video_url): ?>
@@ -517,12 +547,13 @@ $video_description = get_field('video_description');
                 <?php elseif ($fallback_hero_image): ?>
                     <img src="<?php echo esc_url($fallback_hero_image); ?>" alt="" class="img-fluid rounded" />
                 <?php endif; ?>
-                <?php if ($video_description): ?>
-                    <div class="video-description">
+              
+            </div>
+            <?php if ($video_description): ?>
+                    <div class="video-description-mobile">
                         <p><?php echo esc_html($video_description); ?></p>
                     </div>
                 <?php endif; ?>
-            </div>
         <?php endif; ?>
 
         <?php
@@ -559,7 +590,7 @@ $video_description = get_field('video_description');
                         </div>
                     </div>
                     <?php if ($bonus_offer_text): ?>
-                        <span class="bonus-offer" style="color: #575858 !important;">+ <?php echo esc_html($bonus_offer_text); ?></span>
+                        <span class="bonus-offer" style="color: #575858 !important; line-height:1.2;">+ <?php echo esc_html($bonus_offer_text); ?></span>
                     <?php endif; ?>
                 </div>
             <?php else: ?>
@@ -645,51 +676,108 @@ $video_description = get_field('video_description');
         get_field('as_seen_on_image_1'),
         get_field('as_seen_on_image_2'),
         get_field('as_seen_on_image_3'),
+        get_field('as_seen_on_image_4'),
+        get_field('as_seen_on_image_5'),
+        get_field('as_seen_on_image_6'),
     );
+    // Filter out any empty values
+    $as_seen_on_images = array_filter($as_seen_on_images);
 ?>
 <?php if ($as_seen_on_title): ?>
-<section class="as-seen-on-section" style="position:relative; padding:40px 0; background-color: var(--featured-bg); ">
+<section class="featured-on-section mb-4" style="position:relative; padding:40px 0; background-color: var(--featured-bg); ">
     <div class="container" style="background-color: var(--featured-bg);"><!-- Inner container for content alignment -->
         <?php if ($as_seen_on_title): ?>
             <h2 class="text-center mb-4"><?php echo esc_html($as_seen_on_title); ?></h2>
         <?php endif; ?>
-        <div class="d-flex justify-content-center align-items-center flex-wrap" style="overflow-x:hidden;">
+        <div class="approved-featured-container d-flex justify-content-center align-items-center flex-wrap" style="overflow-x:hidden;">
             <?php foreach ($as_seen_on_images as $img): if ($img): ?>
-                <div style="flex:0 1 auto; margin:0 65px 20px;">
-                    <img src="<?php echo esc_url($img); ?>" alt="" style="max-height:88px; width:auto; aspect-ratio:1/1; object-fit:contain;" />
+                <div style="flex:0 1 auto; margin:0 25px 20px;">
+                    <img src="<?php echo esc_url($img); ?>" alt="" style="width:auto; aspect-ratio:1/1; object-fit:contain;" />
                 </div>
             <?php endif; endforeach; ?>
         </div>
     </div>
 </section>
 <?php endif; ?>
-
 <div class="affiliate-landing-page container"><!-- opening new container div after full-width section -->
     <?php
         // Fetch Short Product About fields
         $short_about_title = get_field('short_about_title');
         $short_about_description = get_field('short_about_description');
         $short_about_image = get_field('short_about_image');
+        
+        // Fetch the blurb items
+        $blurb_item_1 = get_field('short_about_blurb_1');
+        $blurb_item_2 = get_field('short_about_blurb_2');
+        $blurb_item_3 = get_field('short_about_blurb_3');
+        
+        // Check if any blurb items exist
+        $has_blurbs = $blurb_item_1 || $blurb_item_2 || $blurb_item_3;
     ?>
-    <?php if ($short_about_title || $short_about_description || $short_about_image): ?>
-    <section class="short-product-about" style="padding:40px 0;">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <?php if ($short_about_title): ?>
-                    <h2 class="mb-4"><?php echo esc_html($short_about_title); ?></h2>
-                <?php endif; ?>
-                <?php if ($short_about_description): ?>
-                    <?php echo wp_kses_post($short_about_description); ?>
-                <?php endif; ?>
-            </div>
+  <?php if ($short_about_title || $short_about_description || $short_about_image || $has_blurbs): ?>
+<section class="short-product-about" style="padding:60px 0;">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <?php if ($short_about_title): ?>
+                <h2 class="mb-4"><?php echo esc_html($short_about_title); ?></h2>
+            <?php endif; ?>
+            
+            <!-- Special mobile-only image that only appears on small screens -->
             <?php if ($short_about_image): ?>
-            <div class="col-md-6 text-center">
-                <img src="<?php echo esc_url($short_about_image); ?>" alt="" class="img-fluid" />
+            <div class="d-block d-md-none mb-4">
+                <img src="<?php echo esc_url($short_about_image); ?>" alt="" class="img-fluid" style="border-radius: 20px;">
             </div>
             <?php endif; ?>
+            
+            <?php if ($short_about_description): ?>
+                <?php echo wp_kses_post($short_about_description); ?>
+            <?php endif; ?>
+            
+            <?php if ($has_blurbs): ?>
+            <ul class="blurb-list mt-4" style="list-style: none; padding-left: 0;">
+                <?php if ($blurb_item_1): ?>
+                <li class="d-flex align-items-start mb-3">
+                    <div class="blurb-icon me-2">
+                        <svg width="23" height="16" viewBox="0 0 23 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 8L8.36396 14.364L21.0912 1.63599" stroke="var(--blurb-icon-color, #FBCA70)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span><?php echo esc_html($blurb_item_1); ?></span>
+                </li>
+                <?php endif; ?>
+                
+                <?php if ($blurb_item_2): ?>
+                <li class="d-flex align-items-start mb-3">
+                    <div class="blurb-icon me-2">
+                        <svg width="23" height="16" viewBox="0 0 23 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 8L8.36396 14.364L21.0912 1.63599" stroke="var(--blurb-icon-color, #FBCA70)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span><?php echo esc_html($blurb_item_2); ?></span>
+                </li>
+                <?php endif; ?>
+                
+                <?php if ($blurb_item_3): ?>
+                <li class="d-flex align-items-start">
+                    <div class="blurb-icon me-2">
+                        <svg width="23" height="16" viewBox="0 0 23 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 8L8.36396 14.364L21.0912 1.63599" stroke="var(--blurb-icon-color, #FBCA70)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span><?php echo esc_html($blurb_item_3); ?></span>
+                </li>
+                <?php endif; ?>
+            </ul>
+            <?php endif; ?>
         </div>
-    </section>
-    <?php endif; ?>
+        <?php if ($short_about_image): ?>
+        <div class="col-md-6 text-center d-none d-md-block">
+            <img src="<?php echo esc_url($short_about_image); ?>" alt="" class="short-about-image img-fluid" style="border-radius: 20px;">
+        </div>
+        <?php endif; ?>
+    </div>
+</section>
+<?php endif; ?>
 
 </div><!-- closing affiliate-landing-page container div before testimonial video carousel -->
 
@@ -713,7 +801,7 @@ $video_description = get_field('video_description');
     <section class="facts-use py-5">
       <div class="container">
         <div class="row">
-          <div class="col-md-6">
+          <div class="facts-use-content col-md-6">
             <h2 class="mb-4"><?php echo esc_html($facts_title ?: 'Facts & Use'); ?></h2>
             
             
@@ -721,9 +809,9 @@ $video_description = get_field('video_description');
               <div><?php echo wp_kses_post($facts_content); ?></div>
             <?php endif; ?>
           </div>
-          <div class="col-md-6">
+          <div class="facts-use-image col-md-6">
             <?php if ($facts_image): ?>
-              <div class="mb-4 text-center facts-image-wrapper">
+              <div class="mb-4 text-center facts-image-wrapper" style="border-radius:20px;">
                 <img src="<?php echo esc_url($facts_image); ?>" alt="Facts Image" class="img-fluid rounded" />
               </div>
             <?php endif; ?>
@@ -760,7 +848,9 @@ $video_description = get_field('video_description');
               );
               $valid_labels = array_filter($label_images);
               if (!empty($valid_labels)): ?>
-              <div class="label-images d-flex flex-wrap align-items-center mb-3">
+              <div class="label-images d-flex flex-wrap align-items-center mb-3" style="
+    gap: 20px;
+">
                 <?php foreach ($valid_labels as $img_url): ?>
                 <img src="<?php echo esc_url($img_url); ?>" alt="Label" class="img-fluid me-2" style="max-height: 50px;" />
                 <?php endforeach; ?>
@@ -829,15 +919,17 @@ if (!empty($experts_title) || !empty($experts)):
                             <?php endif; ?>
                             
                             <?php if (!empty($expert['name'])): ?>
-                                <h4 class="expert-name mb-1"><?php echo esc_html($expert['name']); ?></h4>
+                                <h3 class="expert-name mb-1"><?php echo esc_html($expert['name']); ?></h3>
                             <?php endif; ?>
                             
                             <?php if (!empty($expert['title'])): ?>
-                                <h5 class="expert-title mb-2 text-muted"><?php echo esc_html($expert['title']); ?></h5>
+                                <h5 class="expert-title mb-2 text-muted" style="
+    font-weight: 600;
+" ><?php echo esc_html($expert['title']); ?></h5>
                             <?php endif; ?>
                             
                             <?php if (!empty($expert['text'])): ?>
-                                <div class="expert-text"><?php echo wp_kses_post($expert['text']); ?></div>
+                                <div class="expert-text"><p><?php echo wp_kses_post($expert['text']); ?></p></div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -904,12 +996,12 @@ $img_bottom_2   = get_field('more_about_image_bottom_2');
 
 <?php // More About Product - Section 1 (Text Left, Images Right)
 if ($more_title_1 || $more_content_1 || $img_top_1 || $img_bottom_1): ?>
-<div class="container row align-items-center mb-5" style="margin: 40px auto;">
-  <div class="col-md-6">
+<div class="container row align-items-center mb-5" style="margin: 40px auto;padding-left: 0px !important;padding-right: 0px;">
+  <div class="facts-use-content col-md-6">
     <?php if ($more_title_1): ?><h2 class="mb-3"><?php echo esc_html($more_title_1); ?></h2><?php endif; ?>
     <?php if ($more_content_1): ?><div><?php echo wp_kses_post($more_content_1); ?></div><?php endif; ?>
   </div>
-  <div class="col-md-6">
+  <div class="facts-use-image col-md-6">
     <?php if ($img_top_1): ?><img src="<?php echo esc_url($img_top_1); ?>" alt="<?php echo esc_attr($more_title_1 ?: 'More About Product Image 1 Top'); ?>" class="img-fluid mb-3 rounded" /><?php endif; ?>
     <?php if ($img_bottom_1): ?><img src="<?php echo esc_url($img_bottom_1); ?>" alt="<?php echo esc_attr($more_title_1 ?: 'More About Product Image 1 Bottom'); ?>" class="img-fluid rounded" /><?php endif; ?>
   </div>
@@ -918,12 +1010,12 @@ if ($more_title_1 || $more_content_1 || $img_top_1 || $img_bottom_1): ?>
 
 <?php // More About Product - Section 2 (Images Left, Text Right)
 if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
-<div class="more-about-section-2 row align-items-center mb-5" style="max-width: 1200px; margin: 40px auto;">
-  <div class="col-md-6 order-md-2">
+<div class="more-about-section-2 row align-items-center mb-5" style="margin: 40px auto;">
+  <div class="facts-use-image  col-md-6 order-md-2">
     <?php if ($more_title_2): ?><h2 class="mb-3"><?php echo esc_html($more_title_2); ?></h2><?php endif; ?>
     <?php if ($more_content_2): ?><div><?php echo wp_kses_post($more_content_2); ?></div><?php endif; ?>
   </div>
-  <div class="col-md-6 order-md-1">
+  <div class="facts-use-content col-md-6 order-md-1">
     <?php if ($img_top_2): ?><img src="<?php echo esc_url($img_top_2); ?>" alt="<?php echo esc_attr($more_title_2 ?: 'More About Product Image 2 Top'); ?>" class="img-fluid mb-3 rounded" /><?php endif; ?>
     <?php if ($img_bottom_2): ?><img src="<?php echo esc_url($img_bottom_2); ?>" alt="<?php echo esc_attr($more_title_2 ?: 'More About Product Image 2 Bottom'); ?>" class="img-fluid rounded" /><?php endif; ?>
   </div>
@@ -934,7 +1026,7 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
  
 
 <section style="width:100%; position:relative; padding:40px 0; background-color: var(--featured-bg);">
-    <div class="container" style="background-color: var(--featured-bg);"><!-- Inner container for content alignment -->
+    <div class="remove-padding-x container" style="background-color: var(--featured-bg);"><!-- Inner container for content alignment -->
         <div class="text-center mb-4">
             <?php
             $reviews_title = get_field('reviews_section_title');
@@ -1014,10 +1106,6 @@ if ($more_title_2 || $more_content_2 || $img_top_2 || $img_bottom_2): ?>
                                 </svg>
                                 <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
                                     <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                </svg>
-                                <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M3.38499 14.6031C3.02311 14.7887 2.61249 14.4634 2.68561 14.0481L3.46374 9.61368L0.160925 6.46743C-0.147512 6.17305 0.0128001 5.63493 0.426238 5.5768L5.01811 4.9243L7.06561 0.86774C7.2503 0.502115 7.74999 0.502115 7.93468 0.86774L9.98218 4.9243L14.5741 5.5768C14.9875 5.63493 15.1478 6.17305 14.8384 6.46743L11.5366 9.61368L12.3147 14.0481C12.3878 14.4634 11.9772 14.7887 11.6153 14.6031L7.49874 12.4881L3.38405 14.6031H3.38499Z" fill="#F59E3A"/>
-                                </svg>
                             </div>  
                             <blockquote class="blockquote">
                                 <p class="mb-0">"<?php echo esc_html($testimonial['text']); ?>"</p>
@@ -1215,7 +1303,7 @@ if (!empty($faqs)):
             <div id="<?php echo $idCollapse; ?>" class="accordion-collapse collapse" aria-labelledby="<?php echo $idHeading; ?>" data-bs-parent="#faqAccordion">
               <div class="accordion-body"><?php echo wp_kses_post($faq['answer']); ?></div>
             </div>
-          </div>
+                   </div>
           <?php endfor; ?>
         </div>
       </div>
@@ -1262,6 +1350,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date().getTime();
         const distance = countDownDate - now;
 
+       
+
         if (distance < 0) {
             countdownElement.innerHTML = "EXPIRED";
             clearInterval(interval);
@@ -1298,22 +1388,29 @@ let currentlyPlayingVideo = null;
 function pauseAndResetVideo(videoElement) {
     if (videoElement && !videoElement.paused) {
         videoElement.pause();
-        videoElement.removeAttribute('controls');
-        // Find the play button and testimonial name associated with this video
-        const container = videoElement.closest('.position-relative');
-        if (container) {
-            const playButton = container.querySelector('.play-button, .hero-play-button');
-            if (playButton) {
-                playButton.style.display = 'block'; // Or 'flex' or 'inline-block' depending on original style
-            }
-            const testimonialName = container.querySelector('.testimonial-name');
-            if (testimonialName) {
-                testimonialName.style.display = ''; // Reset display style to default
-            }
+    }
+    // Common reset logic for all videos
+    videoElement.removeAttribute('controls');
+    const container = videoElement.closest('.position-relative');
+    if (container) {
+        const playButton = container.querySelector('.play-button, .hero-play-button');
+        if (playButton) {
+            playButton.style.display = 'block'; // Or 'flex' or 'inline-block'
         }
-        if (currentlyPlayingVideo === videoElement) {
-             currentlyPlayingVideo = null;
+        const testimonialName = container.querySelector('.testimonial-name');
+        if (testimonialName) {
+            testimonialName.style.display = ''; // Reset display style to default
         }
+
+        // Specific logic for mobile hero video thumbnail
+        const mobileHeroThumbnailForReset = container.querySelector('img[alt="Video Thumbnail"]');
+        if (container.classList.contains('mobile-video-wrapper') && mobileHeroThumbnailForReset && videoElement === container.querySelector('video')) {
+            mobileHeroThumbnailForReset.style.display = 'block'; // Show thumbnail
+            videoElement.style.display = 'none'; // Hide video
+        }
+    }
+    if (currentlyPlayingVideo === videoElement) {
+         currentlyPlayingVideo = null;
     }
 }
 
@@ -1321,6 +1418,7 @@ document.addEventListener('click', function(e) {
     var btn = e.target.closest('.play-button, .hero-play-button');
     if (!btn) return;
     var container = btn.closest('.position-relative');
+    if (!container) return;
     var video = container.querySelector('video');
     if (!video) return;
 
@@ -1331,11 +1429,20 @@ document.addEventListener('click', function(e) {
 
     // Play the new video
     btn.style.display = 'none';
-    // Hide testimonial name when playing starts
+    
+    // Hide testimonial name when playing starts (for testimonial videos)
     const testimonialName = container.querySelector('.testimonial-name');
     if (testimonialName) {
         testimonialName.style.display = 'none';
     }
+
+    // Specific logic for mobile hero video thumbnail
+    const mobileHeroThumbnail = container.querySelector('img[alt="Video Thumbnail"]');
+    if (container.classList.contains('mobile-video-wrapper') && mobileHeroThumbnail && video === container.querySelector('video')) {
+        mobileHeroThumbnail.style.display = 'none'; // Hide thumbnail
+        video.style.display = 'block'; // Show video
+    }
+
     video.muted = false;
     video.volume = 1;
     video.autoplay = true;
@@ -1347,6 +1454,11 @@ document.addEventListener('click', function(e) {
         // If playback fails, reset the UI
         btn.style.display = 'block';
         video.removeAttribute('controls');
+        // Restore thumbnail if it was hidden for mobile hero
+        if (container.classList.contains('mobile-video-wrapper') && mobileHeroThumbnail && video === container.querySelector('video')) {
+            mobileHeroThumbnail.style.display = 'block'; // Show thumbnail
+            video.style.display = 'none'; // Hide video again
+        }
     });
 });
 

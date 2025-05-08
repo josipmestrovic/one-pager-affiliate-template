@@ -111,17 +111,17 @@ h1 {
 }
 
 h2 {
-    font-size: 40px;
+    font-size: 36px;
     font-weight: 700;
-    line-height: 55px;
+    line-height: 1.3;
     letter-spacing: 0;
     color: var(--title-text-color);
 }
 
 h3 {
-    font-size: 34px;
+    font-size: 26px;
     font-weight: 700;
-    line-height: 55px;
+    line-height: 1.3;
     letter-spacing: 0;
     color: var(--title-text-color);
 }
@@ -137,7 +137,7 @@ h4 {
 p, li {
     font-size: 18px;
     font-weight: 400;
-    line-height: 100%;
+    line-height: 1.5;
     letter-spacing: 0;
     color: var(--body-text-color);
 }
@@ -176,17 +176,20 @@ li {
     box-shadow: none !important;
 }
 
-@media (max-width: 1399px) {
+@media (max-width: 699px) {
     h1 { font-size: 30px !important; line-height: 32px !important; }
     h2 { font-size: 26px !important; }
     h3 { font-size: 22px !important; }
     h4 { font-size: 22px !important; }
     p, span, ul, ol, li, button, .bonus-offer { font-size: 16px !important; }
-    .subheadline-text {
-        font-size: 20px !important;
-    }
+    
 }
 
+
+.subheadline-text {
+    font-size: 26px !important;
+    line-height: 1.4 !important;
+}
 
 /* Responsive: stack reviews below product name on screens <1200px */
 @media (max-width: 1199px) {
@@ -196,13 +199,19 @@ li {
     }
     .product-rating {
         margin: -5px 0 5px !important;
-        width: 100%;
+        
     }
  
 }
 
+
+.remove-padding-x
+    {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 /* Responsive: switch to full mobile layout and move image/video below content on screens ≤991px */
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
     .row.gx-5.align-items-center {
         flex-direction: column !important;
     }
@@ -220,15 +229,22 @@ li {
 }
 
 @media (min-width: 1399px) {
-        .subheadline-text {
-            font-size: 26px !important;
-        }
+  
 
         .bonus-offer {
             font-size: 18px !important;
             font-weight: 700;
         }
         }
+
+@media (max-width: 699px) {
+     .subheadline-text {
+                font-size: 20px !important;
+            }
+            }
+    
+
+
 
 .mb-0 .me-3 {
     font-size:26px !important;
@@ -245,20 +261,41 @@ li {
     }
 }
 
+/* Position cost-per-day on very small screens */
+@media (max-width: 355px) {
+    .cost-per-day {
+        left: 50% !important;
+    }
+}
+
+/* Font size for from-text on very small screens */
+@media (max-width: 345px) {
+    .from-text {
+        font-size: 22px !important;
+    }
+}
+
+/* Add padding-top: 0 !important for #hero-container on devices between 992px and 1199px */
+@media (min-width: 992px) and (max-width: 1199px) {
+    #hero-container {
+        padding-top: 0 !important;
+    }
+}
+
 /* Mobile video block: hidden by default, visible on screens <992px */
 .mobile-video-wrapper { display: none; }
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
     .mobile-video-wrapper { display: block !important; }
 }
 
 /* Desktop video block: visible on screens ≥992px, hidden on screens <992px */
 .desktop-video-wrapper { display: block; }
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
     .desktop-video-wrapper { display: none !important; }
 }
 
 /* Fix overlap: add spacing between subheadline and mobile video */
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
     .subheadline-text { margin-bottom: 1rem !important; }
     .mobile-video-wrapper { margin-top: 1rem !important; }
 }
@@ -426,3 +463,117 @@ li {
         margin-right: 0 !important;
     }
 }
+
+.video-description-mobile {
+    margin-top:-15px;
+}
+
+@media (max-width: 1199px) {
+    .video-description {
+        margin-top: -15px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .video-description {
+        margin-top: -25px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .video-description {
+        margin-top: -55px;
+    }
+}
+
+/* Hide mobile video description by default */
+.video-description-mobile {
+    display: none;
+}
+
+@media (max-width: 1199px) {
+    .video-description-mobile {
+        display: block !important;
+    }
+}
+
+.short-product-about {
+    /* Base styles for the class if needed */
+}
+
+@media (max-width: 1100px) {
+    .short-product-about {
+        padding: 30px 0 60px !important;
+    }
+}
+
+/* Add top margin to short-about-image on mobile screens */
+@media (max-width: 767px) {
+    .short-about-image {
+        margin-top: 40px !important;
+    }
+}
+/* Remove the first rule that's causing conflicts */
+@media (max-width: 767px) {
+    .short-about-image {
+        margin-top: 40px !important;
+    }
+}
+
+/* Mobile styling for short product about section */
+@media (max-width: 767px) {
+    /* Set column order */
+    .short-product-about .row {
+        flex-direction: column-reverse !important;
+    }
+    
+    /* Text column */
+    .short-product-about .row > .col-md-6:first-child {
+        order: 2 !important;
+        margin-top: 20px !important;
+    }
+    
+    /* Image column */
+    .short-product-about .row > .col-md-6:last-child {
+        order: 1 !important;
+    }
+    
+    /* Use !important with highest specificity to ensure it overrides everything else */
+    img.short-about-image {
+        margin-top: 0 !important;
+        margin-bottom: 20px !important;
+    }
+}
+
+/* Add this to your dynamic-styles.css file */
+.facts-list .list-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.facts-list .list-inline-item {
+    display: inline-flex;
+    width: auto;
+    margin-bottom: 10px;
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 767px) {
+    .facts-list .list-inline {
+        flex-direction: column;
+    }
+    
+    .facts-list .list-inline-item {
+        margin-right: 0 !important;
+    }
+}
+
+.facts-use-content {
+padding-left:0 !important;
+}
+
+
+.facts-use-image {
+    padding-right:0 !important;
+    }

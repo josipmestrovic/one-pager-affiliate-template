@@ -95,6 +95,14 @@ function opalp_register_custom_fields() {
                     'mime_types' => 'mp4',
                 ),
                 array(
+                    'key' => 'field_hero_video_thumbnail',
+                    'label' => 'Hero Video Thumbnail',
+                    'name' => 'hero_video_thumbnail',
+                    'type' => 'image',
+                    'instructions' => 'Upload a thumbnail image that will be shown before the video plays.',
+                    'return_format' => 'url',
+                ),
+                array(
                     'key' => 'field_hero_video_url',
                     'label' => 'Hero Video URL',
                     'name' => 'hero_video_url',
@@ -244,10 +252,10 @@ function opalp_register_custom_fields() {
                     'min' => 0,
                 ),
                 
-                // Add As Seen On tab and fields
+                // Add Featured On / Approved By tab and fields (previously "As Seen On")
                 array(
                     'key'   => 'tab_as_seen_on',
-                    'label' => 'As Seen On',
+                    'label' => 'Featured On / Approved By',
                     'type'  => 'tab',
                     'placement' => 'top',
                 ),
@@ -256,15 +264,15 @@ function opalp_register_custom_fields() {
                     'label'         => 'H2 Title',
                     'name'          => 'as_seen_on_title',
                     'type'          => 'text',
-                    'instructions'  => 'Heading for the As Seen On section.',
-                    'default_value' => 'As Seen On',
+                    'instructions'  => 'Heading for the Featured On / Approved By section.',
+                    'default_value' => 'Featured On / Approved By',
                 ),
                 array(
                     'key'           => 'field_as_seen_on_image_1',
                     'label'         => 'Image 1',
                     'name'          => 'as_seen_on_image_1',
                     'type'          => 'image',
-                    'instructions'  => 'Upload the first As Seen On logo.',
+                    'instructions'  => 'Upload the first logo.',
                     'return_format' => 'url',
                 ),
                 array(
@@ -272,7 +280,7 @@ function opalp_register_custom_fields() {
                     'label'         => 'Image 2',
                     'name'          => 'as_seen_on_image_2',
                     'type'          => 'image',
-                    'instructions'  => 'Upload the second As Seen On logo.',
+                    'instructions'  => 'Upload the second logo.',
                     'return_format' => 'url',
                 ),
                 array(
@@ -280,7 +288,31 @@ function opalp_register_custom_fields() {
                     'label'         => 'Image 3',
                     'name'          => 'as_seen_on_image_3',
                     'type'          => 'image',
-                    'instructions'  => 'Upload the third As Seen On logo.',
+                    'instructions'  => 'Upload the third logo.',
+                    'return_format' => 'url',
+                ),
+                array(
+                    'key'           => 'field_as_seen_on_image_4',
+                    'label'         => 'Image 4',
+                    'name'          => 'as_seen_on_image_4',
+                    'type'          => 'image',
+                    'instructions'  => 'Upload the fourth logo.',
+                    'return_format' => 'url',
+                ),
+                array(
+                    'key'           => 'field_as_seen_on_image_5',
+                    'label'         => 'Image 5',
+                    'name'          => 'as_seen_on_image_5',
+                    'type'          => 'image',
+                    'instructions'  => 'Upload the fifth logo.',
+                    'return_format' => 'url',
+                ),
+                array(
+                    'key'           => 'field_as_seen_on_image_6',
+                    'label'         => 'Image 6',
+                    'name'          => 'as_seen_on_image_6',
+                    'type'          => 'image',
+                    'instructions'  => 'Upload the sixth logo.',
                     'return_format' => 'url',
                 ),
                 array(
@@ -305,6 +337,27 @@ function opalp_register_custom_fields() {
                     'tabs'          => 'all',
                     'toolbar'       => 'full',
                     'media_upload'  => true,
+                ),
+                array(
+                    'key'           => 'field_blurb_item_1',
+                    'label'         => 'Blurb Item 1',
+                    'name'          => 'short_about_blurb_1',
+                    'type'          => 'text',
+                    'instructions'  => 'Enter the first blurb item text',
+                ),
+                array(
+                    'key'           => 'field_blurb_item_2',
+                    'label'         => 'Blurb Item 2',
+                    'name'          => 'short_about_blurb_2',
+                    'type'          => 'text',
+                    'instructions'  => 'Enter the second blurb item text',
+                ),
+                array(
+                    'key'           => 'field_blurb_item_3',
+                    'label'         => 'Blurb Item 3',
+                    'name'          => 'short_about_blurb_3',
+                    'type'          => 'text',
+                    'instructions'  => 'Enter the third blurb item text',
                 ),
                 array(
                     'key'           => 'field_short_about_image',
