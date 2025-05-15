@@ -43,7 +43,7 @@ The One-Pager Affiliate Landing Page blueprint creates a professional single-pag
 
 ## Creating a Landing Page
 
-1. Create a new Page in WordPress.
+1. Go to all pages and edit "Sample Page — Front Page" in WordPress.
 2. In the Page Attributes section, select "One-Pager Affiliate Template" from the Template dropdown.
 3. Save the page.
 4. Fill in the custom fields below the editor to build your landing page.
